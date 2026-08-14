@@ -452,12 +452,255 @@
         font-size: 23px;
       }
     }
+    /* =========================
+   CROP SELECTION
+========================= */
+
+.crop-selection {
+  background: #f7fbf7;
+  padding: 34px 0;
+}
+
+.crop-selection .section-title {
+  font-size: 30px;
+  color: var(--green-dark);
+  margin-bottom: 8px;
+}
+
+.crop-selection .section-subtitle {
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.crop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.crop-card {
+  display: flex;
+  align-items: stretch;
+  min-height: 170px;
+
+  background: #ffffff;
+  border: 1px solid #e1e9e2;
+  border-radius: 18px;
+  overflow: hidden;
+
+  color: var(--text);
+  text-decoration: none;
+
+  box-shadow: 0 5px 16px rgba(0, 0, 0, .07);
+
+  transition:
+    transform .15s ease,
+    box-shadow .15s ease;
+}
+
+.crop-card:active {
+  transform: scale(.98);
+}
+
+.crop-image {
+  width: 42%;
+  min-width: 42%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(145deg, #e8f7e9, #d9f0dc);
+
+  font-size: 58px;
+}
+
+.crop-info {
+  position: relative;
+  flex: 1;
+  padding: 18px 14px 18px 16px;
+}
+
+.crop-info h3 {
+  color: var(--green-dark);
+  font-size: 21px;
+  line-height: 1.25;
+  margin-bottom: 9px;
+}
+
+.crop-info p {
+  color: #4f5851;
+  font-size: 14px;
+  line-height: 1.5;
+  padding-right: 8px;
+}
+
+.crop-info span {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #e8f7e9;
+  color: var(--green-dark);
+
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.crop-card-wide {
+  grid-column: 1 / -1;
+}
+
+.crop-card-wide .crop-image {
+  width: 30%;
+  min-width: 30%;
+}
+
+@media (max-width: 480px) {
+
+  .crop-selection {
+    padding: 28px 0;
+  }
+
+  .crop-selection .section-title {
+    font-size: 25px;
+  }
+
+  .crop-grid {
+    gap: 11px;
+  }
+
+  .crop-card {
+    min-height: 155px;
+  }
+
+  .crop-image {
+    width: 38%;
+    min-width: 38%;
+    font-size: 48px;
+  }
+
+  .crop-info {
+    padding: 15px 10px 15px 12px;
+  }
+
+  .crop-info h3 {
+    font-size: 18px;
+  }
+
+  .crop-info p {
+    font-size: 12px;
+  }
+
+  .crop-info span {
+    width: 30px;
+    height: 30px;
+    right: 8px;
+    bottom: 8px;
+  }
+
+  .crop-card-wide .crop-image {
+    width: 32%;
+    min-width: 32%;
+  }
+}
   </style>
 </head>
 
 
 <body>
+<section class="section crop-selection">
 
+  <div class="container">
+
+    <h2 class="section-title">
+      अपनी फसल चुनें
+    </h2>
+
+    <p class="section-subtitle">
+      अपनी फसल पर क्लिक करें और WhatsApp पर सीधे जानकारी लें।
+    </p>
+
+    <div class="crop-grid">
+
+      <a href="#whatsapp" class="crop-card" data-crop="मिर्च">
+        <div class="crop-image">🌶️</div>
+        <div class="crop-info">
+          <h3>मिर्च</h3>
+          <p>मिर्च में वायरस की समस्या और समाधान जानें</p>
+          <span>›</span>
+        </div>
+      </a>
+
+      <a href="#whatsapp" class="crop-card" data-crop="टमाटर">
+        <div class="crop-image">🍅</div>
+        <div class="crop-info">
+          <h3>टमाटर</h3>
+          <p>टमाटर में वायरस की समस्या और समाधान जानें</p>
+          <span>›</span>
+        </div>
+      </a>
+
+      <a href="#whatsapp" class="crop-card" data-crop="करेला, बरबटी और अन्य बेलवर्गीय फसलें">
+        <div class="crop-image">🥒</div>
+        <div class="crop-info">
+          <h3>करेला, बरबटी और अन्य बेलवर्गीय फसलें</h3>
+          <p>करेला, बरबटी, तोरी, लौकी, खीरा, कद्दू आदि</p>
+          <span>›</span>
+        </div>
+      </a>
+
+      <a href="#whatsapp" class="crop-card" data-crop="बैंगन">
+        <div class="crop-image">🍆</div>
+        <div class="crop-info">
+          <h3>बैंगन</h3>
+          <p>बैंगन में वायरस की समस्या और समाधान जानें</p>
+          <span>›</span>
+        </div>
+      </a>
+
+      <a href="#whatsapp" class="crop-card" data-crop="सोयाबीन">
+        <div class="crop-image">🌱</div>
+        <div class="crop-info">
+          <h3>सोयाबीन</h3>
+          <p>सोयाबीन में वायरस की समस्या और समाधान जानें</p>
+          <span>›</span>
+        </div>
+      </a>
+
+      <a href="#whatsapp" class="crop-card" data-crop="शिमला मिर्च">
+        <div class="crop-image">🫑</div>
+        <div class="crop-info">
+          <h3>शिमला मिर्च</h3>
+          <p>शिमला मिर्च में वायरस की समस्या और समाधान जानें</p>
+          <span>›</span>
+        </div>
+      </a>
+
+      <a href="#whatsapp" class="crop-card crop-card-wide" data-crop="पपीता">
+        <div class="crop-image">🍈</div>
+        <div class="crop-info">
+          <h3>पपीता</h3>
+          <p>पपीता में वायरस की समस्या और समाधान जानें</p>
+          <span>›</span>
+        </div>
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
   <!-- =========================================================
        1. HERO
   ========================================================== -->
