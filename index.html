@@ -632,6 +632,118 @@
     <p style="margin-top:5px;">© 2026 ALTIER Crop Science</p>
   </footer>
 
+
+  <!-- ALTIER TRACKING -->
+  <script>
+    (function () {
+      "use strict";
+
+      const TRACKING_URL = "https://altier-tracking.onrender.com/event";
+
+      function getOrCreateId(storage, key) {
+        let id = storage.getItem(key);
+
+        if (!id) {
+          if (window.crypto && typeof window.crypto.randomUUID === "function") {
+            id = window.crypto.randomUUID();
+          } else {
+            id = "id-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+          }
+          storage.setItem(key, id);
+        }
+
+        return id;
+      }
+
+      let visitorId = getOrCreateId(localStorage, "altier_visitor_id");
+      let sessionId = getOrCreateId(sessionStorage, "altier_session_id");
+
+      const params = new URLSearchParams(window.location.search);
+
+      const source =
+        params.get("utm_source") ||
+        params.get("source") ||
+        "direct";
+
+      const campaign =
+        params.get("utm_campaign") ||
+        params.get("campaign") ||
+        null;
+
+      const adSet =
+        params.get("utm_adset") ||
+        params.get("ad_set") ||
+        null;
+
+      const adName =
+        params.get("utm_ad") ||
+        params.get("ad_name") ||
+        null;
+
+      function sendEvent(eventName, crop, metadata) {
+        const eventData = {
+          event_id:
+            (window.crypto && typeof window.crypto.randomUUID === "function")
+              ? window.crypto.randomUUID()
+              : "event-" + Date.now() + "-" + Math.random().toString(36).slice(2),
+
+          event_name: eventName,
+          session_id: sessionId,
+          visitor_id: visitorId,
+          crop: crop || null,
+          source: source,
+          campaign: campaign,
+          ad_set: adSet,
+          ad_name: adName,
+          landing_page: window.location.pathname,
+          event_time: new Date().toISOString(),
+
+          metadata: Object.assign({
+            page_url: window.location.href,
+            page_title: document.title,
+            referrer: document.referrer || null
+          }, metadata || {})
+        };
+
+        fetch(TRACKING_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(eventData),
+          keepalive: true
+        })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          console.log("ALTIER TRACKING:", data);
+        })
+        .catch(function (error) {
+          console.error("ALTIER TRACKING ERROR:", error);
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Record landing-page visit.
+        sendEvent("page_view", null, {
+          page_type: "crop_selection"
+        });
+
+        // Record which crop card the visitor selects.
+        document.querySelectorAll("[data-crop]").forEach(function (card) {
+          card.addEventListener("click", function () {
+            const crop = card.getAttribute("data-crop");
+
+            sendEvent("crop_click", crop, {
+              clicked_page: card.getAttribute("href") || null
+            });
+          });
+        });
+      });
+    })();
+  </script>
+
   <script>
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
