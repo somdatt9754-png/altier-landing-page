@@ -1,0 +1,55 @@
+name: Install ALTIER Tracking
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  install-tracking:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install shared tracker on crop pages
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          marker = '<script src="tracking.js"></script>'
+          changed = []
+
+          for path in Path('.').glob('*.html'):
+              if path.name.lower() == 'index.html':
+                  continue
+
+              text = path.read_text(encoding='utf-8')
+              if marker in text or '</body>' not in text.lower():
+                  continue
+
+              idx = text.lower().rfind('</body>')
+              text = text[:idx] + '\n  ' + marker + '\n' + text[idx:]
+              path.write_text(text, encoding='utf-8')
+              changed.append(str(path))
+
+          print('Updated:', ', '.join(changed) if changed else 'none')
+          PY
+
+      - name: Commit tracking installation
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No HTML changes required."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add '*.html'
+          git commit -m "Install shared ALTIER tracking on crop pages"
+          git push
