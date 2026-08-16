@@ -19,7 +19,9 @@
 
   function readAttribution() {
     let saved = {};
-    try { saved = JSON.parse(localStorage.getItem(ATTRIBUTION_KEY) || "{}"); } catch (_) {}
+    try {
+      saved = JSON.parse(localStorage.getItem(ATTRIBUTION_KEY) || "{}");
+    } catch (_) {}
 
     const p = new URLSearchParams(window.location.search);
     const current = {
@@ -36,24 +38,78 @@
     return current;
   }
 
+  function readMetaIdentifiers() {
+    const params = new URLSearchParams(window.location.search);
+    let fbp = null;
+    let fbc = null;
+
+    document.cookie
+      .split(";")
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .forEach((item) => {
+        const eq = item.indexOf("=");
+        if (eq === -1) return;
+
+        const key = item.slice(0, eq);
+        const value = decodeURIComponent(item.slice(eq + 1));
+
+        if (key === "_fbp") fbp = value;
+        if (key === "_fbc") fbc = value;
+      });
+
+    const fbclid = params.get("fbclid");
+
+    if (!fbc && fbclid) {
+      fbc = "fb.1." + Date.now() + "." + fbclid;
+
+      try {
+        document.cookie =
+          "_fbc=" +
+          encodeURIComponent(fbc) +
+          ";path=/;max-age=7776000;SameSite=Lax";
+      } catch (_) {}
+    }
+
+    return { fbp, fbc };
+  }
+
   const visitorId = id(localStorage, VISITOR_KEY);
   const sessionId = id(sessionStorage, SESSION_KEY);
+  const trackingToken =
+    "ALT-" + visitorId.replace(/-/g, "").slice(0, 10).toUpperCase();
+
   const attribution = readAttribution();
+  const metaIdentifiers = readMetaIdentifiers();
 
   function cropFromPage() {
     const path = window.location.pathname.toLowerCase();
     const map = [
-      ["mirch", "mirch"], ["chilli", "mirch"], ["chili", "mirch"],
-      ["tamatar", "tomato"], ["tomato", "tomato"],
-      ["baingan", "brinjal"], ["baigan", "brinjal"], ["brinjal", "brinjal"],
-      ["karela", "karela"], ["belvargiya", "karela"],
-      ["papita", "papita"], ["papaya", "papita"],
-      ["soybean", "soybean"], ["soyabean", "soybean"],
+      ["mirch", "mirch"],
+      ["chilli", "mirch"],
+      ["chili", "mirch"],
+      ["tamatar", "tomato"],
+      ["tomato", "tomato"],
+      ["baingan", "brinjal"],
+      ["baigan", "brinjal"],
+      ["brinjal", "brinjal"],
+      ["karela", "karela"],
+      ["belvargiya", "karela"],
+      ["papita", "papita"],
+      ["papaya", "papita"],
+      ["soybean", "soybean"],
+      ["soyabean", "soybean"],
       ["shimla-mirch", "shimla_mirch"],
-      ["paddy", "paddy"], ["rice", "paddy"],
-      ["moong", "moong"], ["urad", "urad"]
+      ["paddy", "paddy"],
+      ["rice", "paddy"],
+      ["moong", "moong"],
+      ["urad", "urad"]
     ];
-    for (const item of map) if (path.includes(item[0])) return item[1];
+
+    for (const item of map) {
+      if (path.includes(item[0])) return item[1];
+    }
+
     return null;
   }
 
@@ -72,11 +128,17 @@
       ad_name: attribution.ad_name,
       landing_page: window.location.pathname || "/",
       event_time: new Date().toISOString(),
-      metadata: Object.assign({
-        page_url: window.location.href,
-        page_title: document.title,
-        referrer: document.referrer || null
-      }, metadata || {})
+      metadata: Object.assign(
+        {
+          page_url: window.location.href,
+          page_title: document.title,
+          referrer: document.referrer || null,
+          tracking_token: trackingToken,
+          fbp: metaIdentifiers.fbp,
+          fbc: metaIdentifiers.fbc
+        },
+        metadata || {}
+      )
     };
 
     return fetch(TRACKING_URL, {
@@ -87,23 +149,71 @@
     }).catch(function () {});
   }
 
+  function appendTrackingToWhatsappLink(el) {
+    const href = el.getAttribute("href");
+    if (!href) return;
+
+    try {
+      const url = new URL(href, window.location.href);
+
+      if (
+        !url.hostname.includes("wa.me") &&
+        !url.hostname.includes("whatsapp.com")
+      ) {
+        return;
+      }
+
+      let text = url.searchParams.get("text") || "";
+
+      if (!/ALTIER\s*REF\s*:/i.test(text)) {
+        text = text.trim() + "\n\n[ALTIER REF: " + trackingToken + "]";
+        url.searchParams.set("text", text);
+        el.setAttribute("href", url.toString());
+      }
+    } catch (_) {}
+  }
+
   window.AltierTracking = {
-    send: send,
-    visitorId: visitorId,
-    sessionId: sessionId,
-    attribution: attribution
+    send,
+    visitorId,
+    sessionId,
+    trackingToken,
+    attribution,
+    metaIdentifiers
   };
 
   document.addEventListener("DOMContentLoaded", function () {
-    send("page_view", cropFromPage(), { page_type: "landing_or_crop_page" });
+    // Page-view signal.
+    send("page_view", cropFromPage(), {
+      page_type: "landing_or_crop_page"
+    });
 
-    document.querySelectorAll('a[href*="wa.me"], a[href*="whatsapp.com"], [data-whatsapp]').forEach(function (el) {
+    // Crop-selection signal.
+    document.querySelectorAll(".crop-card[data-crop]").forEach(function (el) {
       el.addEventListener("click", function () {
-        send("whatsapp_click", cropFromPage(), {
-          destination: el.getAttribute("href") || null,
-          cta_text: (el.textContent || "").trim().slice(0, 200)
+        send("crop_click", el.getAttribute("data-crop"), {
+          page_type: "crop_selection"
         });
       });
     });
+
+    // WhatsApp launch signal + unique attribution token in the prefilled message.
+    document
+      .querySelectorAll('a[href*="wa.me"], a[href*="whatsapp.com"], [data-whatsapp]')
+      .forEach(function (el) {
+        appendTrackingToWhatsappLink(el);
+
+        el.addEventListener("click", function () {
+          appendTrackingToWhatsappLink(el);
+
+          send("whatsapp_click", cropFromPage(), {
+            destination: el.getAttribute("href") || null,
+            cta_text: (el.textContent || "").trim().slice(0, 200),
+            tracking_token: trackingToken,
+            fbp: metaIdentifiers.fbp,
+            fbc: metaIdentifiers.fbc
+          });
+        });
+      });
   });
 })();
