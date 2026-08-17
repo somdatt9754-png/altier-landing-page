@@ -173,6 +173,37 @@
     } catch (_) {}
   }
 
+  function pushSourceSpecificLeadSignal() {
+    if (!window.dataLayer) window.dataLayer = [];
+
+    const source = String(attribution.source || "direct").toLowerCase();
+    let eventName = null;
+
+    if (source.includes("sharechat")) {
+      eventName = "altier_lead_sharechat";
+    } else if (
+      source.includes("meta") ||
+      source.includes("facebook") ||
+      source.includes("instagram")
+    ) {
+      eventName = "altier_lead_meta";
+    }
+
+    if (eventName) {
+      window.dataLayer.push({
+        event: eventName,
+        altier_source: attribution.source,
+        visitor_id: visitorId,
+        session_id: sessionId,
+        tracking_token: trackingToken,
+        crop: cropFromPage(),
+        campaign: attribution.campaign,
+        ad_set: attribution.ad_set,
+        ad_name: attribution.ad_name
+      });
+    }
+  }
+
   window.AltierTracking = {
     send,
     visitorId,
@@ -213,6 +244,9 @@
             fbp: metaIdentifiers.fbp,
             fbc: metaIdentifiers.fbc
           });
+
+          // Send a source-specific signal to Google Tag Manager.
+          pushSourceSpecificLeadSignal();
         });
       });
   });
