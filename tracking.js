@@ -17,6 +17,32 @@
     return value;
   }
 
+  function normalizeSource(value) {
+    const s = String(value || "").trim().toLowerCase().replace(/[-\s]+/g, "_");
+    if (["meta", "facebook", "fb", "facebook_ads", "meta_ads", "instagram", "ig"].includes(s)) return "meta";
+    if (["sharechat", "share_chat", "sharechat_ads", "sharechat_moj", "moj"].includes(s)) return "sharechat";
+    if (["direct", "organic", "none", "unknown", ""].includes(s)) return s === "unknown" ? "unknown" : "direct";
+    return s;
+  }
+
+  function referrerSource() {
+    try {
+      const host = String(new URL(document.referrer || "").hostname || "").toLowerCase();
+      if (
+        host === "facebook.com" ||
+        host.endsWith(".facebook.com") ||
+        host === "fb.com" ||
+        host.endsWith(".fb.com") ||
+        host === "instagram.com" ||
+        host.endsWith(".instagram.com")
+      ) return "meta";
+
+      if (host === "sharechat.com" || host.endsWith(".sharechat.com")) return "sharechat";
+    } catch (_) {}
+
+    return null;
+  }
+
   function readAttribution() {
     let saved = {};
     try {
@@ -24,8 +50,14 @@
     } catch (_) {}
 
     const p = new URLSearchParams(window.location.search);
+    const explicitSource = p.get("utm_source") || p.get("source");
+    const fbclid = p.get("fbclid");
+    const currentSource = explicitSource
+      ? normalizeSource(explicitSource)
+      : (fbclid ? "meta" : (referrerSource() || saved.source || "direct"));
+
     const current = {
-      source: p.get("utm_source") || p.get("source") || saved.source || "direct",
+      source: currentSource,
       campaign: p.get("utm_campaign") || p.get("campaign") || saved.campaign || null,
       ad_set: p.get("utm_adset") || p.get("ad_set") || p.get("adset") || saved.ad_set || null,
       ad_name: p.get("utm_ad") || p.get("utm_content") || p.get("ad_name") || saved.ad_name || null
@@ -176,23 +208,19 @@
   function pushSourceSpecificLeadSignal() {
     if (!window.dataLayer) window.dataLayer = [];
 
-    const source = String(attribution.source || "direct").toLowerCase();
+    const source = normalizeSource(attribution.source);
     let eventName = null;
 
-    if (source.includes("sharechat")) {
+    if (source === "sharechat") {
       eventName = "altier_lead_sharechat";
-    } else if (
-      source.includes("meta") ||
-      source.includes("facebook") ||
-      source.includes("instagram")
-    ) {
+    } else if (source === "meta") {
       eventName = "altier_lead_meta";
     }
 
     if (eventName) {
       window.dataLayer.push({
         event: eventName,
-        altier_source: attribution.source,
+        altier_source: source,
         visitor_id: visitorId,
         session_id: sessionId,
         tracking_token: trackingToken,
