@@ -1,0 +1,39 @@
+name: Install GTM container once
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  install-gtm:
+    if: github.event.head_commit.message != 'Install GTM container GTM-TJQXF2S8'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install GTM snippets
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          gtm_head = '''<!-- Google Tag Manager -->\n<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\nnew Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\nj=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\n'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n})(window,document,'script','dataLayer','GTM-TJQXF2S8');</script>\n<!-- End Google Tag Manager -->'''
+          gtm_body = '''<!-- Google Tag Manager (noscript) -->\n<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJQXF2S8"\nheight="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n<!-- End Google Tag Manager (noscript) -->'''
+          if 'GTM-TJQXF2S8' not in s:
+              s = s.replace('<head>', '<head>\n\n  ' + gtm_head.replace('\n', '\n  '), 1)
+              s = s.replace('<body>', '<body>\n\n  ' + gtm_body.replace('\n', '\n  '), 1)
+              p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git rm .github/workflows/install-gtm-once.yml
+          git commit -m "Install GTM container GTM-TJQXF2S8"
+          git push
