@@ -1,0 +1,81 @@
+name: Install ShareChat Pixel
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  install-sharechat-pixel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install ShareChat base pixel
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path("index.html")
+          html = path.read_text(encoding="utf-8")
+
+          if "sc-events-sdk.sharechat.com/web-sdk.js" in html:
+              print("ShareChat pixel already installed")
+              raise SystemExit(0)
+
+          snippet = r'''  <!-- SHARECHAT PIXEL BASE SDK -->
+          <script>
+          (function (w, d, s, l, i) {
+            w["scSdkId"] = i;
+            w[l] = w[l] || [];
+
+            w.scq = function (eventName, eventType, p) {
+              var props = p || {};
+              w[l].push({
+                eventName: eventName,
+                eventType: eventType,
+                meta: props,
+                eventFireTs: Date.now()
+              });
+            };
+
+            w.scq("PAGE_VIEW", "AUTO", {
+              pageUrl: w.location.href
+            });
+
+            var scr = d.createElement(s);
+            scr.type = "text/javascript";
+            scr.async = true;
+            scr.src = "https://sc-events-sdk.sharechat.com/web-sdk.js";
+
+            var x = d.getElementsByTagName(s)[0];
+            x.parentNode.insertBefore(scr, x);
+          })(window, document, "script", "scLayer", "svwaUTxZno");
+          </script>
+          <!-- END SHARECHAT PIXEL BASE SDK -->
+          '''
+
+          marker = "</head>"
+          if marker not in html:
+              raise SystemExit("Could not find </head> in index.html")
+
+          html = html.replace(marker, snippet + "\n" + marker, 1)
+          path.write_text(html, encoding="utf-8")
+          print("ShareChat base pixel installed into index.html")
+
+      - name: Commit ShareChat pixel
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No index.html changes to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "feat: install ShareChat pixel base SDK"
+          git push
