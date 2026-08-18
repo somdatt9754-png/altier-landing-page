@@ -217,6 +217,21 @@
       eventName = "altier_lead_meta";
     }
 
+    // Universal WhatsApp click event for every crop page.
+    // The crop and original source are preserved for ALTIER tracking.
+    window.dataLayer.push({
+      event: "altier_whatsapp_click",
+      altier_source: source,
+      visitor_id: visitorId,
+      session_id: sessionId,
+      tracking_token: trackingToken,
+      crop: cropFromPage(),
+      campaign: attribution.campaign,
+      ad_set: attribution.ad_set,
+      ad_name: attribution.ad_name
+    });
+
+    // Existing source-specific events are intentionally preserved.
     if (eventName) {
       window.dataLayer.push({
         event: eventName,
