@@ -1,124 +1,80 @@
 <!doctype html>
 <html lang="hi">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>ALTIER Crop Science | Order Now</title>
-  <meta name="description" content="ALTIER Crop Science product order page">
-  <style>
-    :root{--g:#075c2b;--g2:#0b8f43;--gl:#eef9f0;--gold:#d9a91f;--text:#172217;--muted:#657066;--bg:#f6f9f6;--line:#dfe8e1;--white:#fff}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.5}
-    button,input,textarea,select{font:inherit}.wrap{width:min(94%,760px);margin:auto}
-    header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);padding:11px 14px;text-align:center}.brand{font-weight:900;color:var(--g);letter-spacing:.3px;font-size:18px}.sub{font-size:11px;color:var(--muted)}
-    .hero{padding:12px 0 18px;background:linear-gradient(180deg,#fff 0%,#f2f8f2 100%)}.hero-card{overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 28px rgba(0,0,0,.08)}.hero-card img{display:block;width:100%;height:auto}
-    .section{padding:18px 0}.center{text-align:center}.eyebrow{display:inline-block;padding:5px 12px;border-radius:30px;background:#fff7d8;border:1px solid #ead37a;color:#735500;font-weight:800;font-size:12px}.title{font-size:28px;line-height:1.2;color:var(--g);margin:9px 0 6px}.lead{margin:0;color:var(--muted);font-size:14px}
-    .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 5px 18px rgba(0,0,0,.05)}.card h2{margin:0 0 10px;color:var(--g);font-size:21px}.bullets{display:grid;gap:8px;margin:0;padding:0;list-style:none}.bullets li{padding:9px 10px;background:var(--gl);border-radius:10px;font-size:13px}
-    .packs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.pack{position:relative;border:2px solid var(--line);border-radius:14px;background:#fff;padding:13px;cursor:pointer;text-align:left}.pack input{position:absolute;opacity:0}.pack.active{border-color:var(--g2);background:#f2fbf4}.pack strong{display:block;color:var(--g);font-size:18px}.price{font-weight:900;margin-top:4px}.hint{font-size:11px;color:var(--muted)}
-    .qty{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px}.qty-controls{display:flex;align-items:center;gap:12px}.qty button{width:34px;height:34px;border:0;border-radius:50%;background:var(--gl);color:var(--g);font-size:20px;font-weight:900}.qty-value{min-width:22px;text-align:center;font-weight:900}
-    .summary{margin-top:12px;padding:13px;border-radius:13px;background:#f7faf7;border:1px solid var(--line)}.row{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin:5px 0}.row.total{padding-top:8px;border-top:1px solid var(--line);font-size:17px;font-weight:900;color:var(--g)}.discount{color:#147a3b;font-weight:800}
-    label{display:block;font-size:12px;font-weight:800;color:#39433b;margin:10px 0 5px}input[type=text],input[type=tel],textarea{width:100%;padding:12px;border:1px solid #cfdad1;border-radius:10px;background:#fff;outline:none}input:focus,textarea:focus{border-color:var(--g2);box-shadow:0 0 0 3px rgba(11,143,67,.08)}textarea{min-height:80px;resize:vertical}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .pay-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}.pay{border:2px solid var(--line);border-radius:12px;padding:12px;background:#fff;cursor:pointer}.pay.active{border-color:var(--g2);background:#f2fbf4}.pay input{margin-right:7px}.pay b{color:var(--g)}
-    .online-note{display:none;margin-top:8px;padding:9px 10px;background:#eef9f0;border-radius:10px;color:#176b39;font-size:12px}.online-note.show{display:block}
-    .cta{width:100%;border:0;border-radius:13px;background:var(--g);color:#fff;font-weight:900;font-size:17px;padding:14px;margin-top:14px;cursor:pointer}.cta:disabled{opacity:.5;cursor:not-allowed}.secure{text-align:center;color:var(--muted);font-size:11px;margin-top:8px}.error{display:none;color:#b42318;background:#fff1f0;border:1px solid #f3c4bf;padding:10px;border-radius:10px;font-size:12px;margin-top:10px}.success{display:none;text-align:center;padding:22px}.success h2{color:var(--g);margin:0 0 5px}.order-id{font-weight:900;font-size:18px;margin:8px 0}
-    footer{padding:22px 15px 28px;text-align:center;color:var(--muted);font-size:11px}.no-nav{display:none}
-    @media(max-width:480px){.wrap{width:93%}.packs{grid-template-columns:repeat(2,1fr)}.title{font-size:26px}.grid2{grid-template-columns:1fr}.pay-options{grid-template-columns:1fr}.card{padding:14px}}
-  </style>
-  <!-- Keep the existing site's tracking pixel; checkout events are also sent to ALTIER tracking. -->
-  <script>
-    (function(w,d,s,l,i){w["scSdkId"]=i;w[l]=w[l]||[];w.scq=function(eventName,eventType,p){w[l].push({eventName,eventType,meta:p||{},eventFireTs:Date.now()})};w.scq("PAGE_VIEW","AUTO",{pageUrl:w.location.href});var scr=d.createElement(s);scr.async=true;scr.src="https://sc-events-sdk.sharechat.com/web-sdk.js";var x=d.getElementsByTagName(s)[0];x.parentNode.insertBefore(scr,x)})(window,document,"script","scLayer","svwaUTxZno");
-  </script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ALTIER Crop Science | Direct Product Order</title>
+<meta name="description" content="ALTIER Crop Science micronutrient and protein based crop nutrition product — direct order page.">
+<style>
+:root{--green:#075c2b;--green2:#0b8f43;--dark:#102118;--muted:#66736a;--bg:#f4f8f4;--card:#fff;--line:#dce7df;--gold:#d8aa26;--goldbg:#fff8df;--soft:#edf8ef;--red:#a8322b;--shadow:0 10px 35px rgba(16,33,24,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--dark);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.55}button,input,textarea{font:inherit}.wrap{width:min(94%,780px);margin:auto}
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:10px 14px;text-align:center}.brand{font-size:17px;font-weight:950;color:var(--green);letter-spacing:.3px}.tag{font-size:10px;color:var(--muted)}
+.hero{padding:12px 0 22px;background:linear-gradient(#fff,#eef7ef)}.hero-img{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}.hero-img img{width:100%;display:block;height:auto}.hero-copy{text-align:center;padding:18px 5px 0}.badge{display:inline-block;padding:6px 12px;border-radius:999px;background:var(--goldbg);border:1px solid #e7d17b;color:#705400;font-size:11px;font-weight:900}.hero-copy h1{font-size:31px;line-height:1.12;margin:10px 0 7px;color:var(--green)}.hero-copy p{margin:0;color:var(--muted);font-size:14px}
+.section{padding:12px 0}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 6px 24px rgba(16,33,24,.05)}.card h2{font-size:22px;line-height:1.2;color:var(--green);margin:0 0 12px}.card h3{font-size:16px;color:var(--green);margin:16px 0 7px}.intro{font-size:14px;color:#344239;margin:0}.claim-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.claim{padding:14px;border-radius:15px;background:linear-gradient(135deg,#f4fbf5,#fff);border:1px solid var(--line)}.claim .ico{font-size:25px}.claim b{display:block;color:var(--green);font-size:14px;margin-top:5px}.claim span{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.photo-slot{min-height:150px;border-radius:16px;border:1.5px dashed #9ab5a0;background:linear-gradient(145deg,#eef8ef,#fff);display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;color:var(--green);font-weight:850;font-size:13px}.photo-slot small{display:block;color:var(--muted);font-weight:500;font-size:10px;margin-top:5px}
+.nutrients{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;font-size:12px}.nutrients th{background:#123e87;color:#fff;padding:10px 7px;text-align:left}.nutrients td{padding:9px 7px;border-top:1px solid var(--line)}.nutrients tr:nth-child(even) td{background:#f7faf7}.nutrients td:nth-child(2),.nutrients th:nth-child(2){text-align:center}.nutrients td:last-child,.nutrients th:last-child{text-align:right;font-weight:850}.dose-box{margin-top:12px;padding:14px;border-radius:15px;background:var(--soft);border:1px solid #cfe5d3}.dose-big{font-size:25px;font-weight:950;color:var(--green)}.dose-box p{margin:3px 0 0;font-size:12px;color:#4b5b50}.amounts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}.amount{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}.amount b{color:var(--green)}.amount span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.role-table{display:grid;gap:8px}.role{display:grid;grid-template-columns:86px 1fr;gap:10px;padding:11px;border-radius:13px;background:#f8fbf8;border:1px solid var(--line)}.role b{color:var(--green);font-size:13px}.role p{margin:0;font-size:12px;color:#4b574e}.note{font-size:11px;color:var(--muted);margin:10px 0 0}.packs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.pack{position:relative;border:2px solid var(--line);border-radius:15px;background:#fff;padding:14px;cursor:pointer}.pack.active{border-color:var(--green2);background:#f1faf3}.pack input{position:absolute;opacity:0}.pack strong{display:block;color:var(--green);font-size:18px}.price{font-weight:950;margin-top:3px}.hint{font-size:10px;color:var(--muted)}.qty{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px}.qty-controls{display:flex;align-items:center;gap:12px}.qty button{width:35px;height:35px;border:0;border-radius:50%;background:var(--soft);color:var(--green);font-size:20px;font-weight:950}.qty-value{min-width:20px;text-align:center;font-weight:950}.summary{margin-top:12px;padding:13px;border-radius:13px;background:#f8faf8;border:1px solid var(--line)}.row{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin:5px 0}.row.total{padding-top:8px;border-top:1px solid var(--line);font-size:18px;font-weight:950;color:var(--green)}.discount{color:#13733a;font-weight:850}
+label.field{display:block;font-size:12px;font-weight:850;color:#39443d;margin:10px 0 5px}input[type=text],input[type=tel],textarea{width:100%;padding:12px;border:1px solid #ccd9cf;border-radius:11px;background:#fff;outline:none}input:focus,textarea:focus{border-color:var(--green2);box-shadow:0 0 0 3px rgba(11,143,67,.08)}textarea{min-height:78px;resize:vertical}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pay-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:7px}.pay{border:2px solid var(--line);border-radius:13px;padding:12px;background:#fff;cursor:pointer}.pay.active{border-color:var(--green2);background:#f1faf3}.pay input{margin-right:6px}.pay b{color:var(--green)}.online-note{display:none;margin-top:8px;padding:9px;background:var(--soft);border-radius:10px;color:#176a37;font-size:11px}.online-note.show{display:block}.cta{width:100%;border:0;border-radius:14px;background:var(--green);color:#fff;font-weight:950;font-size:17px;padding:15px;margin-top:14px;cursor:pointer}.cta:disabled{opacity:.55}.secure{text-align:center;color:var(--muted);font-size:10px;margin-top:8px}.error{display:none;color:#a8322b;background:#fff2f0;border:1px solid #f1c5c0;padding:10px;border-radius:10px;font-size:11px;margin-top:9px}.success{display:none;text-align:center;padding:20px}.success h2{color:var(--green);margin:0 0 5px}.order-id{font-weight:950;font-size:18px;margin:8px 0}.footer{padding:25px 15px;text-align:center;color:var(--muted);font-size:10px}
+@media(max-width:480px){.wrap{width:93%}.hero-copy h1{font-size:27px}.claim-grid,.photo-grid{grid-template-columns:1fr 1fr}.grid2,.pay-options{grid-template-columns:1fr}.card{padding:15px}.role{grid-template-columns:76px 1fr}.nutrients{font-size:11px}}
+</style>
+<script>
+(function(w,d,s,l,i){w["scSdkId"]=i;w[l]=w[l]||[];w.scq=function(eventName,eventType,p){w[l].push({eventName,eventType,meta:p||{},eventFireTs:Date.now()})};w.scq("PAGE_VIEW","AUTO",{pageUrl:w.location.href});var scr=d.createElement(s);scr.async=true;scr.src="https://sc-events-sdk.sharechat.com/web-sdk.js";var x=d.getElementsByTagName(s)[0];x.parentNode.insertBefore(scr,x)})(window,document,"script","scLayer","svwaUTxZno");
+</script>
 </head>
 <body>
-  <header><div class="brand">ALTIER Crop Science</div><div class="sub">Direct Product Order</div></header>
+<header class="top"><div class="brand">ALTIER Crop Science</div><div class="tag">Direct Product Order • सुरक्षित Checkout</div></header>
+<main>
+<section class="hero"><div class="wrap"><div class="hero-img"><img src="M-OFFER (1).png" alt="ALTIER product offer"></div><div class="hero-copy"><span class="badge">पौधे की फूल और फल बनने की अवस्था के लिए पोषण</span><h1 id="productTitle">Micronutrients + Protein Crop Nutrition</h1><p id="productLead">एक ही फॉर्मूला में Boron, Zinc, Iron, Manganese, Copper, Molybdenum, Nitrogen और Protein का पोषण।</p></div></div></section>
 
-  <main>
-    <section class="hero"><div class="wrap"><div class="hero-card"><img src="M-OFFER (1).png" alt="ALTIER product offer"></div></div></section>
+<section class="section"><div class="wrap"><div class="card"><h2>पौधे में क्या काम करता है?</h2><div class="claim-grid">
+<div class="claim"><div class="ico">🌼</div><b>फूलों की बेहतर तैयारी</b><span>Boron और Zinc reproductive growth, pollen development और flowering processes में महत्वपूर्ण हैं।</span></div>
+<div class="claim"><div class="ico">🌱</div><b>नई बढ़वार व cell development</b><span>Boron cell wall और cell division से जुड़ा है; Zinc growth और protein-related functions में भूमिका निभाता है।</span></div>
+<div class="claim"><div class="ico">🍅</div><b>Fruit Set में पोषण सहायता</b><span>Boron pollen-tube growth और fruiting processes में महत्वपूर्ण है; Zinc भी fruit set से जुड़ा है।</span></div>
+<div class="claim"><div class="ico">🍃</div><b>हरितिमा व photosynthesis support</b><span>Iron, Manganese और Copper photosynthetic और enzyme systems में महत्वपूर्ण भूमिका निभाते हैं।</span></div>
+<div class="claim"><div class="ico">⚡</div><b>नाइट्रोजन उपयोग व metabolism</b><span>Molybdenum nitrate reduction और nitrogen metabolism में महत्वपूर्ण है; Mn भी N metabolism में काम करता है।</span></div>
+<div class="claim"><div class="ico">💪</div><b>Protein & enzyme activity</b><span>Protein और nitrogen के साथ micronutrients पौधे के enzyme, metabolism और tissue development में योगदान देते हैं।</span></div>
+</div><p class="note">ये पोषक तत्व पौधे की सामान्य physiological प्रक्रियाओं को support करते हैं। परिणाम crop, deficiency level, मौसम और application conditions पर निर्भर करेंगे।</p></div></div></section>
 
-    <section class="section"><div class="wrap center">
-      <span class="eyebrow">सीधे ऑर्डर करें</span>
-      <h1 class="title" id="productTitle">ALTIER नया प्रोडक्ट</h1>
-      <p class="lead" id="productLead">प्रोडक्ट की पूरी जानकारी देखें, पैक चुनें और सीधे checkout करें।</p>
-    </div></section>
+<section class="section"><div class="wrap"><div class="card"><h2>फोटो यहाँ दिखाएँगे — असली खेत की तस्वीरें</h2><div class="photo-grid">
+<div class="photo-slot">🌼<br>फूलों से भरा पौधा<small>यहाँ आपकी वास्तविक crop photo लगेगी</small></div>
+<div class="photo-slot">🍅<br>Fruit Set / छोटे फल<small>यहाँ आपकी वास्तविक crop photo लगेगी</small></div>
+<div class="photo-slot">🌿<br>हरी और स्वस्थ growth<small>यहाँ आपकी वास्तविक crop photo लगेगी</small></div>
+<div class="photo-slot">📈<br>Growth / yield stage<small>यहाँ आपकी वास्तविक crop photo लगेगी</small></div>
+</div><p class="note">AI वाली generic फोटो की जगह बाद में आपकी crop की real field photos लगाई जाएँगी।</p></div></div></section>
 
-    <section class="section"><div class="wrap"><div class="card">
-      <h2>प्रोडक्ट की जानकारी</h2>
-      <ul class="bullets" id="productBullets">
-        <li>फसल और उपयोग की जानकारी यहाँ product details के अनुसार दिखाई जाएगी।</li>
-        <li>सही मात्रा और उपयोग की जानकारी product label के अनुसार रखी जाएगी।</li>
-        <li>ऑर्डर के लिए नीचे अपना pack चुनें।</li>
-      </ul>
-    </div></div></section>
+<section class="section"><div class="wrap"><div class="card"><h2>Composition — तैयार मिश्रण में</h2><table class="nutrients"><thead><tr><th>तत्व</th><th>Symbol</th><th>Composition</th></tr></thead><tbody>
+<tr><td>Boron</td><td>B</td><td>3.75%</td></tr><tr><td>Zinc</td><td>Zn</td><td>2.50%</td></tr><tr><td>Iron</td><td>Fe</td><td>2.08%</td></tr><tr><td>Manganese</td><td>Mn</td><td>0.83%</td></tr><tr><td>Copper</td><td>Cu</td><td>0.83%</td></tr><tr><td>Molybdenum</td><td>Mo</td><td>0.083%</td></tr><tr><td>Nitrogen</td><td>N</td><td>3.33%</td></tr><tr><td>Protein</td><td>—</td><td>20.83%</td></tr>
+</tbody></table>
+<div class="dose-box"><div class="dose-big">2–3 ग्राम / लीटर पानी</div><p>Foliar spray के लिए आपकी बताई हुई dose. नीचे उसी dose पर मिलने वाले composition की मात्रा दिखाई गई है।</p><div class="amounts"><div class="amount"><b>2 g/L</b><span>B 75 mg • Zn 50 mg • Fe 41.6 mg</span></div><div class="amount"><b>3 g/L</b><span>B 112.5 mg • Zn 75 mg • Fe 62.4 mg</span></div><div class="amount"><b>2 g/L</b><span>Mn 16.6 mg • Cu 16.6 mg • Mo 1.66 mg</span></div><div class="amount"><b>3 g/L</b><span>Mn 24.9 mg • Cu 24.9 mg • Mo 2.49 mg</span></div><div class="amount"><b>2 g/L</b><span>N 66.6 mg • Protein 416.6 mg</span></div><div class="amount"><b>3 g/L</b><span>N 99.9 mg • Protein 624.9 mg</span></div></div></div></div></div></section>
 
-    <section class="section" id="order"><div class="wrap"><div class="card">
-      <h2>पैक चुनें</h2>
-      <div class="packs" id="packs"></div>
-      <div class="qty"><span>Quantity</span><div class="qty-controls"><button type="button" id="minus">−</button><span class="qty-value" id="qty">1</span><button type="button" id="plus">+</button></div></div>
-      <div class="summary">
-        <div class="row"><span>Product</span><b id="sumPack">—</b></div>
-        <div class="row"><span>Subtotal</span><b id="sumSubtotal">₹—</b></div>
-        <div class="row discount" id="discountRow"><span>Online Payment Discount (5%)</span><b id="sumDiscount">−₹0</b></div>
-        <div class="row total"><span>Payable</span><b id="sumTotal">₹—</b></div>
-      </div>
-    </div></div></section>
+<section class="section"><div class="wrap"><div class="card"><h2>हर nutrient की भूमिका</h2><div class="role-table">
+<div class="role"><b>Boron<br>3.75%</b><p>Cell wall, sugar/carbohydrate movement, flowering, pollen germination और pollen-tube growth तथा fruiting processes में महत्वपूर्ण भूमिका।</p></div>
+<div class="role"><b>Zinc<br>2.50%</b><p>Enzyme/protein functions, cell expansion, pollen development, flower-bud differentiation और fruit set में भूमिका।</p></div>
+<div class="role"><b>Iron<br>2.08%</b><p>Redox systems और कई enzymes के लिए जरूरी; chloroplast/photosynthetic processes में महत्वपूर्ण।</p></div>
+<div class="role"><b>Manganese<br>0.83%</b><p>Photosynthesis, enzyme activation, respiration और nitrogen metabolism में भूमिका।</p></div>
+<div class="role"><b>Copper<br>0.83%</b><p>Redox/enzymatic processes, photosynthesis, lignin synthesis और plant structural functions में भूमिका।</p></div>
+<div class="role"><b>Molybdenum<br>0.083%</b><p>Nitrate reductase और nitrogen metabolism से जुड़ा micronutrient; nitrogen utilization में महत्वपूर्ण।</p></div>
+<div class="role"><b>Nitrogen<br>3.33%</b><p>Vegetative growth और amino-acid/protein formation के लिए आवश्यक primary nutrient।</p></div>
+<div class="role"><b>Protein<br>20.83%</b><p>फॉर्मूलेशन में दिया गया protein component; product के overall nutritional contribution का हिस्सा।</p></div>
+</div><p class="note">ऊपर के nutrient functions scientific plant-nutrition references से cross-check किए गए हैं। किसी nutrient की कमी न होने पर अतिरिक्त spray का फायदा crop-specific हो सकता है; micronutrients में overdose से phytotoxicity का risk भी रहता है।</p></div></div></section>
 
-    <section class="section"><div class="wrap"><div class="card" id="checkoutCard">
-      <h2>Checkout Details</h2>
-      <form id="checkoutForm">
-        <label for="name">नाम *</label><input id="name" name="name" type="text" autocomplete="name" required>
-        <label for="phone">मोबाइल नंबर *</label><input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10" required>
-        <label for="address">पूरा पता *</label><textarea id="address" name="address" autocomplete="street-address" required></textarea>
-        <div class="grid2"><div><label for="village">गाँव / एरिया</label><input id="village" name="village" type="text"></div><div><label for="pincode">पिनकोड *</label><input id="pincode" name="pincode" type="text" inputmode="numeric" maxlength="6" autocomplete="postal-code" required></div></div>
-        <div class="grid2"><div><label for="district">जिला</label><input id="district" name="district" type="text"></div><div><label for="state">राज्य</label><input id="state" name="state" type="text"></div></div>
-        <label for="postOffice">पोस्ट ऑफिस</label><input id="postOffice" name="postOffice" type="text">
+<section class="section" id="order"><div class="wrap"><div class="card"><h2>अपना Pack चुनें</h2><div class="packs" id="packs"></div><div class="qty"><span>Quantity</span><div class="qty-controls"><button type="button" id="minus">−</button><span class="qty-value" id="qty">1</span><button type="button" id="plus">+</button></div></div><div class="summary"><div class="row"><span>Pack</span><b id="sumPack">—</b></div><div class="row"><span>Subtotal</span><b id="sumSubtotal">₹—</b></div><div class="row discount"><span>Online Payment Discount (5%)</span><b id="sumDiscount">−₹0</b></div><div class="row total"><span>Payable</span><b id="sumTotal">₹—</b></div></div></div></div></section>
 
-        <label>Payment Method *</label>
-        <div class="pay-options">
-          <label class="pay active" id="codPay"><input type="radio" name="payment" value="cod" checked> <b>Cash on Delivery</b></label>
-          <label class="pay" id="onlinePay"><input type="radio" name="payment" value="online"> <b>Online Payment</b><br><span class="hint">Flat 5% OFF</span></label>
-        </div>
-        <div class="online-note" id="onlineNote">Online payment चुनने पर 5% flat discount लागू होगा। Payment gateway अगले step में connect किया जा सकता है।</div>
-        <div class="error" id="error"></div>
-        <button class="cta" id="submitBtn" type="submit">अभी ऑर्डर करें</button>
-        <div class="secure">आपकी order details सुरक्षित रूप से हमारे order system में भेजी जाएँगी।</div>
-      </form>
-      <div class="success" id="success"><h2>ऑर्डर रिक्वेस्ट मिल गई ✅</h2><div class="order-id" id="orderId"></div><p>आपकी details हमारे system में save हो गई हैं।</p></div>
-    </div></div></section>
-  </main>
-  <footer>ALTIER Crop Science • Direct Order Page</footer>
-
+<section class="section"><div class="wrap"><div class="card" id="checkoutCard"><h2>Checkout</h2><form id="checkoutForm">
+<label class="field" for="name">नाम *</label><input id="name" name="name" type="text" autocomplete="name" required>
+<label class="field" for="phone">मोबाइल नंबर *</label><input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10" required>
+<label class="field" for="address">पूरा पता *</label><textarea id="address" name="address" autocomplete="street-address" required></textarea>
+<div class="grid2"><div><label class="field" for="village">गाँव / एरिया</label><input id="village" name="village" type="text"></div><div><label class="field" for="pincode">पिनकोड *</label><input id="pincode" name="pincode" type="text" inputmode="numeric" maxlength="6" autocomplete="postal-code" required></div></div>
+<div class="grid2"><div><label class="field" for="district">जिला</label><input id="district" name="district" type="text"></div><div><label class="field" for="state">राज्य</label><input id="state" name="state" type="text"></div></div>
+<label class="field" for="postOffice">पोस्ट ऑफिस</label><input id="postOffice" name="postOffice" type="text">
+<label class="field">Payment Method *</label><div class="pay-options"><label class="pay active"><input type="radio" name="payment" value="cod" checked> <b>Cash on Delivery</b></label><label class="pay"><input type="radio" name="payment" value="online"> <b>Online Payment</b><br><span class="hint">Flat 5% OFF</span></label></div>
+<div class="online-note" id="onlineNote">Online Payment चुनने पर 5% flat discount लागू होगा। Payment gateway अगले step में connect किया जाएगा।</div><div class="error" id="error"></div><button class="cta" id="submitBtn" type="submit">अभी ऑर्डर करें</button><div class="secure">आपकी order details सुरक्षित रूप से हमारे order system में भेजी जाएँगी।</div></form>
+<div class="success" id="success"><h2>ऑर्डर रिक्वेस्ट मिल गई ✅</h2><div class="order-id" id="orderId"></div><p>आपकी details हमारे system में save हो गई हैं।</p></div></div></div></section>
+</main><footer class="footer">ALTIER Crop Science • Direct Product Order</footer>
 <script>
-const TRACKING_URL = "https://altier-tracking.onrender.com/event";
-const CONFIG = {
-  productName: "ALTIER नया प्रोडक्ट",
-  productLead: "प्रोडक्ट की पूरी जानकारी देखें, पैक चुनें और सीधे checkout करें।",
-  bullets: [
-    "फसल और उपयोग की जानकारी यहाँ product details के अनुसार दिखाई जाएगी।",
-    "सही मात्रा और उपयोग की जानकारी product label के अनुसार रखी जाएगी।",
-    "ऑर्डर के लिए नीचे अपना pack चुनें।"
-  ],
-  packs: [
-    {grams:100,price:null},{grams:200,price:null},{grams:300,price:null},{grams:400,price:null},{grams:500,price:null}
-  ]
-};
-
-const qs=s=>document.querySelector(s);
-const visitorId=localStorage.getItem("altier_visitor_id")||crypto.randomUUID();localStorage.setItem("altier_visitor_id",visitorId);
-const sessionId=sessionStorage.getItem("altier_session_id")||crypto.randomUUID();sessionStorage.setItem("altier_session_id",sessionId);
-const params=new URLSearchParams(location.search);
-const attribution={source:params.get("utm_source")||"direct",campaign:params.get("utm_campaign"),ad_set:params.get("utm_adset"),ad_name:params.get("utm_content"),landing_page:location.pathname+location.search};
-let selected=CONFIG.packs[0],quantity=1;
-
-qs("#productTitle").textContent=CONFIG.productName;qs("#productLead").textContent=CONFIG.productLead;qs("#productBullets").innerHTML=CONFIG.bullets.map(x=>`<li>${x}</li>`).join("");
-function money(v){return v==null?"₹—":"₹"+Number(v).toLocaleString("en-IN",{maximumFractionDigits:2})}
-function renderPacks(){qs("#packs").innerHTML=CONFIG.packs.map((p,i)=>`<label class="pack ${i===0?"active":""}"><input type="radio" name="pack" value="${p.grams}" ${i===0?"checked":""}><strong>${p.grams} ग्राम</strong><span class="price">${money(p.price)}</span><span class="hint">Product pack</span></label>`).join("");document.querySelectorAll(".pack").forEach(el=>el.addEventListener("click",()=>{document.querySelectorAll(".pack").forEach(x=>x.classList.remove("active"));el.classList.add("active");selected=CONFIG.packs.find(x=>x.grams===Number(el.querySelector("input").value));updateSummary()}));}
-function updateSummary(){const sub=selected.price==null?null:selected.price*quantity;const online=qs("input[name=payment]:checked")?.value==="online";const disc=sub==null?null:(online?sub*.05:0);qs("#sumPack").textContent=`${selected.grams} ग्राम × ${quantity}`;qs("#sumSubtotal").textContent=money(sub);qs("#sumDiscount").textContent=disc==null?"−₹0":`−${money(disc)}`;qs("#sumTotal").textContent=money(sub==null?null:sub-disc)}
-renderPacks();updateSummary();
-qs("#minus").onclick=()=>{quantity=Math.max(1,quantity-1);qs("#qty").textContent=quantity;updateSummary()};qs("#plus").onclick=()=>{quantity++;qs("#qty").textContent=quantity;updateSummary()};
-document.querySelectorAll("input[name=payment]").forEach(r=>r.addEventListener("change",()=>{document.querySelectorAll(".pay").forEach(x=>x.classList.remove("active"));r.closest(".pay").classList.add("active");qs("#onlineNote").classList.toggle("show",r.value==="online");updateSummary()}));
-
-qs("#pincode").addEventListener("input",async e=>{const pin=e.target.value.replace(/\D/g,"").slice(0,6);e.target.value=pin;if(pin.length!==6)return;try{const r=await fetch(`https://api.postalpincode.in/pincode/${pin}`);const j=await r.json();const po=j?.[0]?.PostOffice?.[0];if(!po)return;qs("#state").value=po.State||"";qs("#district").value=po.District||"";qs("#postOffice").value=po.Name||"";}catch(_){/* keep manual entry available */}});
-
-qs("#checkoutForm").addEventListener("submit",async e=>{e.preventDefault();const error=qs("#error");error.style.display="none";if(selected.price==null){error.textContent="इस pack की price अभी configure नहीं हुई है। पहले price set करनी होगी।";error.style.display="block";return}const fd=new FormData(e.target);const payment=fd.get("payment");const subtotal=selected.price*quantity;const discount=payment==="online"?subtotal*.05:0;const total=subtotal-discount;const payload={event_id:`shop-${Date.now()}-${crypto.randomUUID()}`,event_name:"shop_order_submitted",visitor_id:visitorId,session_id:sessionId,source:attribution.source,campaign:attribution.campaign,ad_set:attribution.ad_set,ad_name:attribution.ad_name,landing_page:attribution.landing_page,metadata:{product_name:CONFIG.productName,pack_grams:selected.grams,quantity,unit_price:selected.price,subtotal,online_discount:discount,total_amount:total,payment_method:payment,payment_status:payment==="online"?"pending":"cod_pending",customer_name:fd.get("name"),phone:fd.get("phone"),address:fd.get("address"),village:fd.get("village"),pincode:fd.get("pincode"),district:fd.get("district"),state:fd.get("state"),post_office:fd.get("postOffice"),referrer:document.referrer,created_from:"shop.html"}};const btn=qs("#submitBtn");btn.disabled=true;btn.textContent="ऑर्डर सेव हो रहा है…";try{const r=await fetch(TRACKING_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const j=await r.json();if(!r.ok||!j.success)throw new Error(j.error||"Order save failed");qs("#checkoutForm").style.display="none";qs("#success").style.display="block";qs("#orderId").textContent=`Order Ref: ${j.event?.id||payload.event_id}`;window.scrollTo({top:qs("#checkoutCard").offsetTop-70,behavior:"smooth"})}catch(err){error.textContent="ऑर्डर सेव नहीं हो पाया। कृपया थोड़ी देर बाद फिर कोशिश करें।";error.style.display="block";btn.disabled=false;btn.textContent="अभी ऑर्डर करें"}});
-</script>
-</body>
-</html>
+const TRACKING_URL="https://altier-tracking.onrender.com/event";
+const CONFIG={productName:"ALTIER Micronutrient + Protein Crop Nutrition",packs:[{grams:100,price:null},{grams:200,price:null},{grams:300,price:null},{grams:400,price:null},{grams:500,price:null}]};
+const qs=s=>document.querySelector(s);const visitorId=localStorage.getItem("altier_visitor_id")||crypto.randomUUID();localStorage.setItem("altier_visitor_id",visitorId);const sessionId=sessionStorage.getItem("altier_session_id")||crypto.randomUUID();sessionStorage.setItem("altier_session_id",sessionId);const params=new URLSearchParams(location.search);const attribution={source:params.get("utm_source")||"direct",campaign:params.get("utm_campaign"),ad_set:params.get("utm_adset"),ad_name:params.get("utm_content"),landing_page:location.pathname+location.search};let selected=CONFIG.packs[0],quantity=1;
+function money(v){return v==null?"₹—":"₹"+Number(v).toLocaleString("en-IN",{maximumFractionDigits:2})}function renderPacks(){qs("#packs").innerHTML=CONFIG.packs.map((p,i)=>`<label class="pack ${i===0?"active":""}"><input type="radio" name="pack" value="${p.grams}" ${i===0?"checked":""}><strong>${p.grams} ग्राम</strong><span class="price">${money(p.price)}</span><span class="hint">Product pack</span></label>`).join("");document.querySelectorAll(".pack").forEach(el=>el.addEventListener("click",()=>{document.querySelectorAll(".pack").forEach(x=>x.classList.remove("active"));el.classList.add("active");selected=CONFIG.packs.find(x=>x.grams===Number(el.querySelector("input").value));updateSummary()}))}function updateSummary(){const sub=selected.price==null?null:selected.price*quantity;const online=qs("input[name=payment]:checked")?.value==="online";const disc=sub==null?null:(online?sub*.05:0);qs("#sumPack").textContent=`${selected.grams} ग्राम × ${quantity}`;qs("#sumSubtotal").textContent=money(sub);qs("#sumDiscount").textContent=disc==null?"−₹0":`−${money(disc)}`;qs("#sumTotal").textContent=money(sub==null?null:sub-disc)}renderPacks();updateSummary();qs("#minus").onclick=()=>{quantity=Math.max(1,quantity-1);qs("#qty").textContent=quantity;updateSummary()};qs("#plus").onclick=()=>{quantity++;qs("#qty").textContent=quantity;updateSummary()};document.querySelectorAll("input[name=payment]").forEach(r=>r.addEventListener("change",()=>{document.querySelectorAll(".pay").forEach(x=>x.classList.remove("active"));r.closest(".pay").classList.add("active");qs("#onlineNote").classList.toggle("show",r.value==="online");updateSummary()}));
+qs("#pincode").addEventListener("input",async e=>{const pin=e.target.value.replace(/\D/g,"").slice(0,6);e.target.value=pin;if(pin.length!==6)return;try{const r=await fetch(`https://api.postalpincode.in/pincode/${pin}`);const j=await r.json();const po=j?.[0]?.PostOffice?.[0];if(!po)return;qs("#state").value=po.State||"";qs("#district").value=po.District||"";qs("#postOffice").value=po.Name||""}catch(_){}});
+qs("#checkoutForm").addEventListener("submit",async e=>{e.preventDefault();const error=qs("#error");error.style.display="none";if(selected.price==null){error.textContent="Pack की price अभी configure नहीं हुई है।";error.style.display="block";return}const fd=new FormData(e.target),payment=fd.get("payment"),subtotal=selected.price*quantity,discount=payment==="online"?subtotal*.05:0,total=subtotal-discount;const payload={event_id:`shop-${Date.now()}-${crypto.randomUUID()}`,event_name:"shop_order_submitted",visitor_id:visitorId,session_id:sessionId,source:attribution.source,campaign:attribution.campaign,ad_set:attribution.ad_set,ad_name:attribution.ad_name,landing_page:attribution.landing_page,metadata:{product_name:CONFIG.productName,pack_grams:selected.grams,quantity,unit_price:selected.price,subtotal,online_discount:discount,total_amount:total,payment_method:payment,payment_status:payment==="online"?"pending":"cod_pending",customer_name:fd.get("name"),phone:fd.get("phone"),address:fd.get("address"),village:fd.get("village"),pincode:fd.get("pincode"),district:fd.get("district"),state:fd.get("state"),post_office:fd.get("postOffice"),referrer:document.referrer,created_from:"shop.html"}};const btn=qs("#submitBtn");btn.disabled=true;btn.textContent="ऑर्डर सेव हो रहा है…";try{const r=await fetch(TRACKING_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const j=await r.json();if(!r.ok||!j.success)throw new Error(j.error||"Order save failed");qs("#checkoutForm").style.display="none";qs("#success").style.display="block";qs("#orderId").textContent=`Order Ref: ${j.event?.id||payload.event_id}`;window.scrollTo({top:qs("#checkoutCard").offsetTop-70,behavior:"smooth"})}catch(err){error.textContent="ऑर्डर सेव नहीं हो पाया। कृपया थोड़ी देर बाद फिर कोशिश करें।";error.style.display="block";btn.disabled=false;btn.textContent="अभी ऑर्डर करें"}});
+</script></body></html>
