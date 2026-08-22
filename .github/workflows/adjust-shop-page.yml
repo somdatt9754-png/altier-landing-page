@@ -1,0 +1,39 @@
+name: Adjust shop page
+
+on:
+  push:
+    branches:
+      - shop-campaign-product-page
+
+permissions:
+  contents: write
+
+jobs:
+  adjust:
+    if: "!contains(github.event.head_commit.message, '[shop-adjusted]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: shop-campaign-product-page
+      - name: Apply requested UI tweaks
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('shop.html')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('.benefit .ico{width:100%;max-width:376px;', '.benefit .ico{width:100%;max-width:188px;')
+          s = s.replace('.benefit .ico{max-width:352px}', '.benefit .ico{max-width:176px}')
+          s = s.replace('<b>Cash on Delivery</b><br><small>Pay on delivery</small>', '<b>Cash on Delivery</b><br><small>Pay on delivery (पार्सल मिलने पर पेमेंट की सुविधा)</small>')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add shop.html
+          git commit -m "Adjust benefit image size and COD label [shop-adjusted]" || exit 0
+          git push origin shop-campaign-product-page
+          git rm .github/workflows/adjust-shop-page.yml
+          git commit -m "Remove temporary shop adjustment workflow [shop-adjusted]" || true
+          git push origin shop-campaign-product-page || true
