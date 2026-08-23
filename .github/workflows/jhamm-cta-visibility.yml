@@ -1,0 +1,36 @@
+name: JHAMM CTA visibility
+on:
+  push:
+    branches: [shop-campaign-product-page]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch shop CTA visibility
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('shop.html')
+          text=p.read_text(encoding='utf-8')
+          marker='<!-- JHAMM CTA VISIBILITY -->'
+          script='''\n<!-- JHAMM CTA VISIBILITY -->\n<script>\n(function(){\n  function emit(){\n    var nearBottom=(window.scrollY+window.innerHeight)>=Math.max(document.body.scrollHeight-420,0);\n    var form=document.getElementById('orderForm');\n    var atForm=!!form && (form.getBoundingClientRect().top < window.innerHeight*1.1);\n    try{parent.postMessage({type:'ALTIER_SHOW_PURCHASE',visible:nearBottom&&atForm},'*')}catch(e){}\n  }\n  window.addEventListener('scroll',emit,{passive:true});\n  window.addEventListener('resize',emit);\n  window.addEventListener('load',function(){setTimeout(emit,300)});\n  setTimeout(emit,500);\n})();\n</script>\n<!-- End JHAMM CTA VISIBILITY -->\n'''
+          if marker not in text:
+              idx=text.lower().rfind('</body>')
+              if idx<0: raise SystemExit('body end not found')
+              text=text[:idx]+script+text[idx:]
+              p.write_text(text,encoding='utf-8')
+          PY
+      - name: Commit and remove workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add shop.html
+          git rm .github/workflows/jhamm-cta-visibility.yml
+          git commit -m "Show JHAMM Purchase CTA only near form end"
+          git push
