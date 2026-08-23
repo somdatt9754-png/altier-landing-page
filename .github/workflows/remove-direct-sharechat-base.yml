@@ -1,0 +1,41 @@
+name: Remove direct ShareChat base
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  remove-direct-sharechat-base:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Remove direct ShareChat base block
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+          start = text.find('<!-- SHARECHAT PIXEL BASE SDK -->')
+          end_marker = '<!-- END SHARECHAT PIXEL BASE SDK -->'
+          end = text.find(end_marker)
+          if start != -1 and end != -1:
+              end += len(end_marker)
+              text = text[:start] + text[end:]
+              p.write_text(text, encoding='utf-8')
+          else:
+              raise SystemExit('ShareChat base block markers not found')
+          PY
+
+      - name: Commit removal and clean up workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Remove direct ShareChat base SDK" || true
+          git rm .github/workflows/remove-direct-sharechat-base.yml
+          git commit -m "Remove temporary ShareChat cleanup workflow"
+          git push
