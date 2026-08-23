@@ -43,4 +43,21 @@ const packs={100:{mrp:629,price:249},250:{mrp:879,price:349},500:{mrp:1379,price
   document.querySelectorAll('.lang-btn').forEach(btn=>btn.addEventListener('click',()=>selectLanguage(btn.dataset.lang)));
 })();
 </script>
+
+<!-- JHAMM CTA VISIBILITY -->
+<script>
+(function(){
+  function emit(){
+    var nearBottom=(window.scrollY+window.innerHeight)>=Math.max(document.body.scrollHeight-420,0);
+    var form=document.getElementById('orderForm');
+    var atForm=!!form && (form.getBoundingClientRect().top < window.innerHeight*1.1);
+    try{parent.postMessage({type:'ALTIER_SHOW_PURCHASE',visible:nearBottom&&atForm},'*')}catch(e){}
+  }
+  window.addEventListener('scroll',emit,{passive:true});
+  window.addEventListener('resize',emit);
+  window.addEventListener('load',function(){setTimeout(emit,300)});
+  setTimeout(emit,500);
+})();
+</script>
+<!-- End JHAMM CTA VISIBILITY -->
 </body></html>
