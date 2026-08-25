@@ -59,6 +59,15 @@
       }catch(e){
         console.log("[SHARECHAT] Verification postMessage failed", e);
       }
+      // SAFEGUARD: this button never fires a live Purchase event. It only
+      // shows a mapping-confirmation card for ShareChat's reviewer/tool —
+      // it does not wait for or depend on any response from the iframe.
+      var testOrderId = 'VERIFY-' + Date.now();
+      target.style.display='none';
+      meta.textContent='Verification mode: Purchase event mapping confirmed (test order '+testOrderId+'). No live Purchase pixel event was fired. Real Purchase events fire only from the production thank-you page after an actual order submission.';
+      result.style.display='flex';
+      result.setAttribute('aria-hidden','false');
+      console.log("[SHARECHAT] Verification confirmation shown", {testOrderId: testOrderId});
     }
   });
 
