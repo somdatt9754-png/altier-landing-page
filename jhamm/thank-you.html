@@ -1,4 +1,4 @@
-<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>JHAMM | Order Confirmed</title><meta name="description" content="JHAMM order confirmation"><!-- ShareChat Base -->
+<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>JHAMM | Order Confirmed</title><meta name="description" content="JHAMM order confirmation"><!-- ShareChat SDK loader (Purchase-only page: no manual PAGE_VIEW call here) -->
 <script>
 (function(w,d,s,l,i){
   w['scSdkId']=i;
@@ -7,8 +7,7 @@
     var props=p||{};
     w[l].push({eventName:eventName,eventType:eventType,meta:props,eventFireTs:Date.now()});
   };
-  w.scq("PAGE_VIEW","AUTO",{pageUrl:w.location.href});
-  console.log("[SHARECHAT] PAGE_VIEW initialized", {pageUrl:w.location.href});
+  console.log("[SHARECHAT] SDK loader ready on thank-you page (no PAGE_VIEW fired here by design)", {pageUrl:w.location.href});
   var scr=d.createElement(s);
   scr.type='text/javascript';
   scr.async=true;
@@ -17,7 +16,7 @@
   x.parentNode.insertBefore(scr,x);
 })(window,document,"script","scLayer","svwaUTxZno");
 </script>
-<!-- End ShareChat Base -->
+<!-- End ShareChat SDK loader -->
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TJGXF2S8');</script>
 <!-- End Google Tag Manager -->
