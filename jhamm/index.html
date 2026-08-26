@@ -26,13 +26,13 @@
 <body>
 <!-- Google Tag Manager (noscript) --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJGXF2S8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><!-- End Google Tag Manager (noscript) -->
 <iframe id="shop" src="https://raw.githack.com/somdatt9754-png/altier-landing-page/shop-campaign-product-page/shop-pin.html?v=20260824-0921" title="JHAMM Shop"></iframe>
-<button id="scVerifyTarget" class="sc-verify-target" type="button" aria-label="ऑर्डर करें" data-sharechat-event="Purchase">ऑर्डर करें</button>
+<button id="scVerifyTarget" class="sc-verify-target" type="button" aria-label="ऑर्डर करें">ऑर्डर करें</button>
 <section id="scVerifyResult" class="sc-verify-result" aria-hidden="true">
   <div class="sc-verify-card">
     <div class="ok">✅</div>
-    <h1>Purchase Verified</h1>
-    <p>Successful order detected after form submission.</p>
-    <div class="meta" id="scVerifyMeta">ShareChat Purchase event fired.</div>
+    <h1>Mapping Verified</h1>
+    <p>Order flow structure confirmed for pixel setup.</p>
+    <div class="meta" id="scVerifyMeta">Mapping confirmed.</div>
   </div>
 </section>
 <script>
@@ -47,24 +47,24 @@
 
   if(verifyMode){
     target.style.display='block';
-    console.log("[SHARECHAT] Verification/test mode active (?verify=true). Real Purchase is disabled in this mode.");
+    console.log("[SHARECHAT] Verification/test mode active (?verify=true). Live conversion tracking is disabled in this mode.");
   }
 
   target.addEventListener('click', function(){
     console.log("[SHARECHAT] Order button clicked", {verifyMode: verifyMode});
     if(verifyMode){
       try{
-        frame.contentWindow.postMessage({type:'ALTIER_MAPPING_TEST', event:'Purchase'}, '*');
-        console.log("[SHARECHAT] Verification mapping-test message sent to iframe (no Purchase pixel call made)");
+        frame.contentWindow.postMessage({type:'ALTIER_MAPPING_TEST', event:'order_success'}, '*');
+        console.log("[SHARECHAT] Verification mapping-test message sent to iframe (no live pixel call made)");
       }catch(e){
         console.log("[SHARECHAT] Verification postMessage failed", e);
       }
-      // SAFEGUARD: this button never fires a live Purchase event. It only
+      // SAFEGUARD: this button never fires a live conversion event. It only
       // shows a mapping-confirmation card for ShareChat's reviewer/tool —
       // it does not wait for or depend on any response from the iframe.
       var testOrderId = 'VERIFY-' + Date.now();
       target.style.display='none';
-      meta.textContent='Verification mode: Purchase event mapping confirmed (test order '+testOrderId+'). No live Purchase pixel event was fired. Real Purchase events fire only from the production thank-you page after an actual order submission.';
+      meta.textContent='Verification mode: order flow mapping confirmed (test order '+testOrderId+'). No live conversion pixel event was fired. Real conversion events fire only from the production thank-you page after an actual order submission.';
       result.style.display='flex';
       result.setAttribute('aria-hidden','false');
       console.log("[SHARECHAT] Verification confirmation shown", {testOrderId: testOrderId});
@@ -79,10 +79,10 @@
     var o = d.order;
 
     if(verifyMode){
-      // SAFEGUARD: verification/test mode must NEVER fire a live Purchase event.
-      console.log("[SHARECHAT] Purchase blocked: verification/test mode", {order_id: o.order_id});
+      // SAFEGUARD: verification/test mode must NEVER fire a live conversion event.
+      console.log("[SHARECHAT] Conversion blocked: verification/test mode", {order_id: o.order_id});
       target.style.display='none';
-      meta.textContent='Verification mode: order flow mapping confirmed for order '+(o.order_id||'')+'. No live Purchase pixel event was fired (test/simulation only). Real Purchase events fire only from the production thank-you page after an actual order submission.';
+      meta.textContent='Verification mode: order flow mapping confirmed for order '+(o.order_id||'')+'. No live conversion pixel event was fired (test/simulation only). Real conversion events fire only from the production thank-you page after an actual order submission.';
       result.style.display='flex';
       result.setAttribute('aria-hidden','false');
       return;
@@ -95,7 +95,7 @@
     }catch(err){
       console.log("[SHARECHAT] Could not persist order confirmation to sessionStorage", err);
     }
-    console.log("[SHARECHAT] Redirecting to thank-you page for Purchase event", {order_id: o.order_id});
+    console.log("[SHARECHAT] Redirecting to thank-you page for order confirmation", {order_id: o.order_id});
     window.location.href='/jhamm/thank-you.html';
   });
 })();
