@@ -1,22 +1,4 @@
-<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>JHAMM | Order Confirmed</title><meta name="description" content="JHAMM order confirmation"><!-- ShareChat SDK loader (Purchase-only page: no manual PAGE_VIEW call here) -->
-<script>
-(function(w,d,s,l,i){
-  w['scSdkId']=i;
-  w[l]=w[l]||[];
-  w.scq=function(eventName,eventType,p){
-    var props=p||{};
-    w[l].push({eventName:eventName,eventType:eventType,meta:props,eventFireTs:Date.now()});
-  };
-  console.log("[SHARECHAT] SDK loader ready on thank-you page (no PAGE_VIEW fired here by design)", {pageUrl:w.location.href});
-  var scr=d.createElement(s);
-  scr.type='text/javascript';
-  scr.async=true;
-  scr.src='https://sc-events-sdk.sharechat.com/web-sdk.js';
-  var x=d.getElementsByTagName(s)[0];
-  x.parentNode.insertBefore(scr,x);
-})(window,document,"script","scLayer","svwaUTxZno");
-</script>
-<!-- End ShareChat SDK loader -->
+<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>JHAMM | Order Confirmed</title><meta name="description" content="JHAMM order confirmation">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TJGXF2S8');</script>
 <!-- End Google Tag Manager -->
@@ -50,21 +32,19 @@
 </main>
 <script>
 (function(){
+  // Only job of this script: display the order details that were passed
+  // from the order form. No pixel calls, no dataLayer pushes here — GTM's
+  // own Page View trigger (URL contains "/thank-you") handles firing the
+  // Purchase tag for whichever ad platform needs it (ShareChat, Meta, etc).
   function set(id,v){ var e=document.getElementById(id); if(e) e.textContent = (v==null ? '' : v); }
   function money(v){ return '₹'+Number(v||0).toLocaleString('en-IN'); }
 
   var o = null;
   try{
     o = JSON.parse(sessionStorage.getItem('jhammm_order_confirmation') || 'null');
-  }catch(e){
-    console.log("[SHARECHAT] Failed to read order confirmation from sessionStorage", e);
-  }
+  }catch(e){}
 
   if(!o){
-    // SAFEGUARD: no order data present. Do NOT push any purchase-related
-    // dataLayer event. This blocks GTM's Page URL trigger from having
-    // anything valid to key off if someone opens this URL directly.
-    console.log("[SHARECHAT] Purchase blocked: no successful order (no order data found on thank-you page)");
     document.getElementById('cOrder').textContent = 'Order details unavailable';
     return;
   }
@@ -81,51 +61,6 @@
   set('cState', o.state);
   set('cPin', o.pincode);
   set('cAddress', o.address_line);
-
-  // ---- Single source of truth for Purchase: dataLayer push only. ----
-  // ShareChat's GTM tag listens for this and fires the real pixel call.
-  // We do NOT call window.scq('Purchase', ...) directly here anymore —
-  // doing so alongside the GTM tag would double-fire the same conversion.
-
-  var firedKey = 'jhammm_purchase_fired_' + String(o.order_id || '');
-  var alreadyFired = false;
-  try{
-    alreadyFired = sessionStorage.getItem(firedKey) === '1';
-  }catch(e){
-    console.log("[SHARECHAT] Could not read dedup flag from sessionStorage", e);
-  }
-
-  if(alreadyFired){
-    console.log("[SHARECHAT] Purchase blocked: dataLayer event already pushed for order_id=" + (o.order_id || 'unknown') + " (page refresh or revisit)");
-    return;
-  }
-
-  console.log("[SHARECHAT] Order submission confirmed, pushing purchase dataLayer event", {order_id: o.order_id});
-
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({
-    event: 'sharechat_purchase',          // <-- GTM Custom Event trigger should listen for this exact name
-    order_id: o.order_id,
-    value: Number(o.total_amount),
-    currency: 'INR',
-    content_name: o.product_name,
-    pack_grams: o.pack_grams,
-    quantity: Number(o.quantity),
-    payment_method: o.payment_method
-  });
-
-  try{
-    sessionStorage.setItem(firedKey, '1');
-  }catch(e){
-    console.log("[SHARECHAT] Could not persist dedup flag to sessionStorage", e);
-  }
-
-  console.log("[SHARECHAT] Purchase event firing (via GTM dataLayer)", {
-    order_id: o.order_id,
-    value: Number(o.total_amount),
-    currency: 'INR'
-  });
-  console.log("[SHARECHAT] dataLayer event 'sharechat_purchase' pushed successfully for order_id=" + (o.order_id || 'unknown'));
 })();
 </script>
 </body></html>
