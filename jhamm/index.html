@@ -1,75 +1,19 @@
-<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>JHAMM Shop</title><meta name="description" content="JHAMM Micro Nutrient direct order page"><!-- ShareChat Base -->
-<script>
-(function(w,d,s,l,i){
-  w['scSdkId']=i;
-  w[l]=w[l]||[];
-  w.scq=function(eventName,eventType,p){
-    var props=p||{};
-    w[l].push({eventName:eventName,eventType:eventType,meta:props,eventFireTs:Date.now()});
-  };
-  w.scq("PAGE_VIEW","AUTO",{pageUrl:w.location.href});
-  console.log("[SHARECHAT] PAGE_VIEW initialized", {pageUrl:w.location.href});
-  var scr=d.createElement(s);
-  scr.type='text/javascript';
-  scr.async=true;
-  scr.src='https://sc-events-sdk.sharechat.com/web-sdk.js';
-  var x=d.getElementsByTagName(s)[0];
-  x.parentNode.insertBefore(scr,x);
-})(window,document,"script","scLayer","svwaUTxZno");
-</script>
-<!-- End ShareChat Base -->
+<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>JHAMM Shop</title><meta name="description" content="JHAMM Micro Nutrient direct order page">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TJGXF2S8');</script>
 <!-- End Google Tag Manager -->
-<style>html,body{margin:0;height:100%;overflow:hidden;background:#f5f8f5}iframe{display:block;width:100%;height:100%;min-height:100vh;border:0}.sc-verify-target{position:fixed;left:5%;right:5%;bottom:20px;z-index:10000;width:90%;border:0;border-radius:13px;background:#075c2b;color:#fff;font:900 17px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding:14px 18px;box-shadow:0 8px 22px rgba(0,0,0,.2);cursor:pointer;text-align:center;display:none}.sc-verify-target:active{transform:scale(.99)}.sc-verify-result{position:fixed;inset:0;z-index:20000;display:none;align-items:center;justify-content:center;background:rgba(245,248,245,.96);padding:20px}.sc-verify-card{width:min(92%,520px);background:#fff;border:1px solid #dfe8e1;border-radius:20px;box-shadow:0 12px 30px rgba(16,45,25,.12);padding:24px;text-align:center;color:#172217}.sc-verify-card .ok{font-size:56px}.sc-verify-card h1{margin:7px 0;color:#075c2b;font-size:28px}.sc-verify-card p{margin:0;color:#657066;font-size:14px}.sc-verify-card .meta{margin-top:14px;padding:12px;border-radius:12px;background:#eef9f0;color:#176b39;font-size:13px}</style>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#f5f8f5}iframe{display:block;width:100%;height:100%;min-height:100vh;border:0}</style>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJGXF2S8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><!-- End Google Tag Manager (noscript) -->
 <iframe id="shop" src="https://raw.githack.com/somdatt9754-png/altier-landing-page/shop-campaign-product-page/shop-pin.html?v=20260824-0921" title="JHAMM Shop"></iframe>
-<button id="scVerifyTarget" class="sc-verify-target" type="button" aria-label="ऑर्डर करें">ऑर्डर करें</button>
-<section id="scVerifyResult" class="sc-verify-result" aria-hidden="true">
-  <div class="sc-verify-card">
-    <div class="ok">✅</div>
-    <h1>Mapping Verified</h1>
-    <p>Order flow structure confirmed for pixel setup.</p>
-    <div class="meta" id="scVerifyMeta">Mapping confirmed.</div>
-  </div>
-</section>
 <script>
 (function(){
-  var frame=document.getElementById('shop'),
-      target=document.getElementById('scVerifyTarget'),
-      result=document.getElementById('scVerifyResult'),
-      meta=document.getElementById('scVerifyMeta');
-
-  var params=new URLSearchParams(window.location.search);
-  var verifyMode = params.get('verify')==='true';
-
-  if(verifyMode){
-    target.style.display='block';
-    console.log("[SHARECHAT] Verification/test mode active (?verify=true). Live conversion tracking is disabled in this mode.");
-  }
-
-  target.addEventListener('click', function(){
-    console.log("[SHARECHAT] Order button clicked", {verifyMode: verifyMode});
-    if(verifyMode){
-      try{
-        frame.contentWindow.postMessage({type:'ALTIER_MAPPING_TEST', event:'order_success'}, '*');
-        console.log("[SHARECHAT] Verification mapping-test message sent to iframe (no live pixel call made)");
-      }catch(e){
-        console.log("[SHARECHAT] Verification postMessage failed", e);
-      }
-      // SAFEGUARD: this button never fires a live conversion event. It only
-      // shows a mapping-confirmation card for ShareChat's reviewer/tool —
-      // it does not wait for or depend on any response from the iframe.
-      var testOrderId = 'VERIFY-' + Date.now();
-      target.style.display='none';
-      meta.textContent='Verification mode: order flow mapping confirmed (test order '+testOrderId+'). No live conversion pixel event was fired. Real conversion events fire only from the production thank-you page after an actual order submission.';
-      result.style.display='flex';
-      result.setAttribute('aria-hidden','false');
-      console.log("[SHARECHAT] Verification confirmation shown", {testOrderId: testOrderId});
-    }
-  });
+  // Only job of this script: when the order form (inside the iframe) confirms
+  // a real successful order, redirect to the thank-you page. No pixel calls,
+  // no ShareChat SDK, no dataLayer pushes — GTM handles all tracking itself
+  // using its own triggers (e.g. a Page View trigger on the thank-you URL).
+  var frame=document.getElementById('shop');
 
   window.addEventListener('message', function(e){
     var d = e && e.data;
@@ -77,25 +21,9 @@
     if(d.type !== 'ALTIER_ORDER_SUCCESS' || !d.order) return;
 
     var o = d.order;
-
-    if(verifyMode){
-      // SAFEGUARD: verification/test mode must NEVER fire a live conversion event.
-      console.log("[SHARECHAT] Conversion blocked: verification/test mode", {order_id: o.order_id});
-      target.style.display='none';
-      meta.textContent='Verification mode: order flow mapping confirmed for order '+(o.order_id||'')+'. No live conversion pixel event was fired (test/simulation only). Real conversion events fire only from the production thank-you page after an actual order submission.';
-      result.style.display='flex';
-      result.setAttribute('aria-hidden','false');
-      return;
-    }
-
-    // Production path: real order success received from iframe.
-    console.log("[SHARECHAT] Order SUCCESS received from order form", {order_id: o.order_id, total_amount: o.total_amount});
     try{
       sessionStorage.setItem('jhammm_order_confirmation', JSON.stringify(o));
-    }catch(err){
-      console.log("[SHARECHAT] Could not persist order confirmation to sessionStorage", err);
-    }
-    console.log("[SHARECHAT] Redirecting to thank-you page for order confirmation", {order_id: o.order_id});
+    }catch(err){}
     window.location.href='/jhamm/thank-you.html';
   });
 })();
