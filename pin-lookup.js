@@ -1,35 +1,19 @@
-/* JHAMM PIN lookup helper — local/master-only lookup. */
+/* JHAMM PIN lookup helper — local Supabase master only. */
 (function(){
-  const MASTER_SOURCE='https://raw.githubusercontent.com/IndiaPost/pin/master/api/v01/json/';
+  const LOOKUP_URL='https://oljqgaqgxypzvavimkye.supabase.co/functions/v1/lookup-pin';
   const cache=new Map();
-
-  async function fetchMaster(pin){
-    const res=await fetch(MASTER_SOURCE+pin+'.json',{cache:'no-store'});
-    if(!res.ok) throw new Error('PIN not found');
-    const rows=await res.json();
-    if(!Array.isArray(rows)||!rows.length) throw new Error('PIN not found');
-    return rows;
-  }
 
   window.jhammLookupPin=async function(pin){
     pin=String(pin||'').replace(/\D/g,'').slice(0,6);
     if(!/^\d{6}$/.test(pin)) throw new Error('Invalid PIN');
     if(cache.has(pin)) return cache.get(pin);
 
-    const rows=await fetchMaster(pin);
-    const first=rows[0]||{};
+    const res=await fetch(LOOKUP_URL+'?pincode='+encodeURIComponent(pin),{cache:'no-store'});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok || !data.ok) throw new Error(data.error||'PIN not found');
 
-    // One PIN may have multiple post offices. We intentionally do NOT
-    // expose/post a default post-office name to the customer.
-    const result={
-      pincode:pin,
-      state:first.statename||'',
-      district:first.Districtname||'',
-      city:first.Districtname||''
-    };
-
-    if(!result.state && !result.city) throw new Error('PIN not found');
-
+    const result={pincode:pin,city:data.city||data.district||'',district:data.district||'',state:data.state||''};
+    if(!result.city && !result.state) throw new Error('PIN not found');
     cache.set(pin,result);
     return result;
   };
