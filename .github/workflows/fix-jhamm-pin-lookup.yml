@@ -1,0 +1,65 @@
+name: Fix JHAMM PIN lookup
+
+on:
+  push:
+    branches:
+      - shop-campaign-product-page
+
+permissions:
+  contents: write
+
+jobs:
+  fix-pin-lookup:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Patch PIN lookup
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('shop-pin.html')
+          text = path.read_text(encoding='utf-8')
+
+          script_tag = '<script src="https://raw.githubusercontent.com/somdatt9754-png/altier-landing-page/main/pin-lookup.js"></script>\n'
+          if script_tag not in text:
+              marker = '</head>'
+              if marker not in text:
+                  raise SystemExit('Missing </head> marker')
+              text = text.replace(marker, script_tag + marker, 1)
+
+          old_fields = '''            <div>\n              <label for="state">\n                राज्य\n              </label>\n\n              <input\n                id="state"\n                type="text"\n                readonly\n                placeholder="पिन कोड से पता चलेगा"\n              >\n            </div>'''
+
+          new_fields = '''            <div>\n              <label for="state">\n                राज्य\n              </label>\n\n              <input\n                id="state"\n                type="text"\n                readonly\n                placeholder="पिन कोड से पता चलेगा"\n              >\n            </div>\n\n            <div>\n              <label for="district">\n                जिला\n              </label>\n\n              <input\n                id="district"\n                type="text"\n                readonly\n                placeholder="पिन कोड से पता चलेगा"\n              >\n            </div>\n\n            <div>\n              <label for="city">\n                शहर / पोस्ट ऑफिस\n              </label>\n\n              <input\n                id="city"\n                type="text"\n                readonly\n                placeholder="पिन कोड से पता चलेगा"\n              >\n            </div>'''
+
+          if old_fields not in text:
+              raise SystemExit('State field block not found')
+          text = text.replace(old_fields, new_fields, 1)
+
+          old_pin = '''    /*\n      PIN CODE INPUT\n    */\n\n    $("pin").addEventListener(\n      "input",\n      () => {\n\n        if ($("pin").value.length === 0) {\n\n          $("state").value =\n            "राज्य पिन कोड के अनुसार भरें";\n\n        }\n\n      }\n    );'''
+
+          new_pin = '''    /*\n      PIN CODE LOOKUP\n      India Post master data -> State / District / Post Office\n    */\n\n    let pinLookupTimer = null;\n\n    $("pin").addEventListener(\n      "input",\n      () => {\n\n        const pin = $("pin").value.replace(/\\D/g, "").slice(0, 6);\n        $("pin").value = pin;\n\n        clearTimeout(pinLookupTimer);\n\n        $("state").value = "";\n        $("district").value = "";\n        $("city").value = "";\n\n        if (pin.length !== 6) {\n          return;\n        }\n\n        $("state").value = "पता लगाया जा रहा है…";\n        $("district").value = "पता लगाया जा रहा है…";\n        $("city").value = "पता लगाया जा रहा है…";\n\n        pinLookupTimer = setTimeout(async () => {\n          try {\n            if (typeof window.jhammLookupPin !== "function") {\n              throw new Error("PIN lookup helper unavailable");\n            }\n\n            const data = await window.jhammLookupPin(pin);\n\n            if ($("pin").value !== pin) return;\n\n            $("state").value = data.state || "";\n            $("district").value = data.district || "";\n            $("city").value = data.postOffice || "";\n          } catch (error) {\n            console.error("PIN LOOKUP ERROR:", error);\n\n            if ($("pin").value !== pin) return;\n\n            $("state").value = "PIN नहीं मिला";\n            $("district").value = "";\n            $("city").value = "";\n          }\n        }, 120);\n      }\n    );'''
+
+          if old_pin not in text:
+              raise SystemExit('PIN handler block not found')
+          text = text.replace(old_pin, new_pin, 1)
+
+          old_order = '''          pin: $("pin").value.trim(),\n\n          state: $("state").value.trim(),\n\n          address: $("address").value.trim(),'''
+          new_order = '''          pin: $("pin").value.trim(),\n\n          state: $("state").value.trim(),\n\n          district: $("district").value.trim(),\n\n          city: $("city").value.trim(),\n\n          address: $("address").value.trim(),'''
+
+          if old_order not in text:
+              raise SystemExit('Order data block not found')
+          text = text.replace(old_order, new_order, 1)
+
+          path.write_text(text, encoding='utf-8')
+
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add shop-pin.html
+          git commit -m "Fix JHAMM PIN lookup [skip ci]"
+          git push
