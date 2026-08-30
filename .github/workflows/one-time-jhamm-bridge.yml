@@ -1,0 +1,43 @@
+name: One-time JHAMM ShareChat bridge
+on:
+  push:
+    branches: [shop-campaign-product-page]
+permissions:
+  contents: write
+jobs:
+  patch-jhamm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch shop-pin bridge
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('shop-pin.html')
+          text = p.read_text(encoding='utf-8')
+          marker = "window.addEventListener('message',function(e){"
+          listener = "window.addEventListener('message',function(e){try{var m=e&&e.data;if(!m||m.type!=='ALTIER_SUBMIT_ORDER')return;var d=f.contentDocument||f.contentWindow.document;var form=d&&d.getElementById('orderForm');if(form)form.requestSubmit()}catch(err){}});"
+          if marker not in text:
+              needle = "f.addEventListener('load',()=>setTimeout(wire,300));})();</script>"
+              if needle not in text:
+                  raise SystemExit('wire footer marker not found')
+              text = text.replace(needle, listener + "f.addEventListener('load',()=>setTimeout(wire,300));})();</script>", 1)
+          success_old = "showOrder(out);firePurchase(d,out)"
+          success_new = "showOrder(out);firePurchase(d,out);try{parent.postMessage({type:'ALTIER_ORDER_SUCCESS',order_id:out.order_id,value:Number(out.total_amount),currency:'INR'},'*')}catch(e){}"
+          if success_old in text and "ALTIER_ORDER_SUCCESS" not in text:
+              text = text.replace(success_old, success_new, 1)
+          p.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit patch
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No patch needed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add shop-pin.html
+          git commit -m "Bridge JHAMM order to ShareChat purchase"
+          git push
