@@ -652,6 +652,7 @@
   <script
     src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
   </script>
+<script src="https://raw.githubusercontent.com/somdatt9754-png/altier-landing-page/main/pin-lookup.js"></script>
 </head>
 
 <body>
@@ -1350,6 +1351,32 @@
               >
             </div>
 
+            <div>
+              <label for="district">
+                जिला
+              </label>
+
+              <input
+                id="district"
+                type="text"
+                readonly
+                placeholder="पिन कोड से पता चलेगा"
+              >
+            </div>
+
+            <div>
+              <label for="city">
+                शहर / पोस्ट ऑफिस
+              </label>
+
+              <input
+                id="city"
+                type="text"
+                readonly
+                placeholder="पिन कोड से पता चलेगा"
+              >
+            </div>
+
           </div>
 
 
@@ -1602,20 +1629,56 @@
 
 
     /*
-      PIN CODE INPUT
+      PIN CODE LOOKUP
+      India Post master data -> State / District / Post Office
     */
+
+    let pinLookupTimer = null;
 
     $("pin").addEventListener(
       "input",
       () => {
 
-        if ($("pin").value.length === 0) {
+        const pin = $("pin").value.replace(/\D/g, "").slice(0, 6);
+        $("pin").value = pin;
 
-          $("state").value =
-            "राज्य पिन कोड के अनुसार भरें";
+        clearTimeout(pinLookupTimer);
 
+        $("state").value = "";
+        $("district").value = "";
+        $("city").value = "";
+
+        if (pin.length !== 6) {
+          return;
         }
 
+        $("state").value = "पता लगाया जा रहा है…";
+        $("district").value = "पता लगाया जा रहा है…";
+        $("city").value = "पता लगाया जा रहा है…";
+
+        pinLookupTimer = setTimeout(async () => {
+          try {
+            if (typeof window.jhammLookupPin !== "function") {
+              throw new Error("PIN lookup helper unavailable");
+            }
+
+            const data = await window.jhammLookupPin(pin);
+
+            if ($("pin").value !== pin) return;
+
+            $("state").value = data.state || "";
+            $("district").value = data.district || "";
+            $("city").value = data.postOffice || "";
+          } catch (error) {
+            console.error("PIN LOOKUP ERROR:", error);
+
+            if ($("pin").value !== pin) return;
+
+            $("state").value = "PIN नहीं मिला";
+            $("district").value = "";
+            $("city").value = "";
+          }
+        }, 120);
       }
     );
 
@@ -1727,6 +1790,10 @@
           pin: $("pin").value.trim(),
 
           state: $("state").value.trim(),
+
+          district: $("district").value.trim(),
+
+          city: $("city").value.trim(),
 
           address: $("address").value.trim(),
 
