@@ -8,13 +8,36 @@
     if(!/^\d{6}$/.test(pin)) throw new Error('Invalid PIN');
     if(cache.has(pin)) return cache.get(pin);
 
-    const res=await fetch(LOOKUP_URL+'?pincode='+encodeURIComponent(pin),{cache:'no-store'});
+    const res=await fetch(LOOKUP_URL+'?pincode='+encodeURIComponent(pin)+'&v=2',{cache:'no-store'});
     const data=await res.json().catch(()=>({}));
     if(!res.ok || !data.ok) throw new Error(data.error||'PIN not found');
 
-    const result={pincode:pin,city:data.city||data.district||'',district:data.district||'',state:data.state||''};
-    if(!result.city && !result.state) throw new Error('PIN not found');
+    const city=data.city || data.district || '';
+    const district=data.district || '';
+    const state=data.state || '';
+
+    if(!city && !state) throw new Error('PIN not found');
+
+    const result={
+      pincode:pin,
+      city,
+      postOffice:city,
+      district,
+      state
+    };
+
     cache.set(pin,result);
     return result;
   };
+
+  // Final customer-facing form: PIN -> City + State only.
+  function cleanLocationLabel(){
+    const label=document.querySelector('label[for="city"]');
+    if(label) label.textContent='शहर';
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',cleanLocationLabel,{once:true});
+  }else{
+    cleanLocationLabel();
+  }
 })();
