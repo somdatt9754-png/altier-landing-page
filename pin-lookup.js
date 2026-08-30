@@ -1,1 +1,62 @@
-document.addEventListener('DOMContentLoaded',()=>{const p=document.getElementById('pin'),s=document.getElementById('state');if(!p||!s)return;let d=document.getElementById('district');if(!d){const grid=s.closest('.grid2');if(grid){const box=document.createElement('div');box.innerHTML='<label for="district">जिला</label><input id="district" type="text" readonly placeholder="पिन कोड से पता चलेगा">';grid.appendChild(box);d=box.querySelector('#district')}}let o=document.getElementById('postOffice');p.addEventListener('input',()=>{const v=p.value.replace(/\D/g,'').slice(0,6);p.value=v;s.value='';if(d)d.value='';if(o)o.value='';if(v.length!==6)return;fetch('https://api.postalpincode.in/pincode/'+v,{cache:'no-store'}).then(r=>r.json()).then(x=>{const a=x&&x[0]&&x[0].PostOffice;if(!Array.isArray(a)||!a.length)throw 0;const z=a[0];s.value=z.State||'';if(d)d.value=z.District||'';if(o)o.value=z.Name||''}).catch(()=>{s.value='PIN Code नहीं मिला';if(d)d.value='';if(o)o.value=''})})});
+/* JHAMM PIN lookup helper.
+   Primary: India Post data mirrored in GitHub (CORS-friendly).
+   Fallback: PostalPincode API.
+*/
+(function(){
+  const INDIA_POST_SOURCE='https://raw.githubusercontent.com/IndiaPost/pin/master/api/v01/json/';
+  const POSTAL_PINCODE_SOURCE='https://api.postalpincode.in/pincode/';
+  const cache=new Map();
+
+  async function fetchJson(url){
+    const res=await fetch(url,{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    return await res.json();
+  }
+
+  async function lookupFromIndiaPost(pin){
+    const rows=await fetchJson(INDIA_POST_SOURCE+pin+'.json');
+    if(!Array.isArray(rows)||!rows.length) throw new Error('PIN not found');
+
+    const delivery=rows.find(r=>String(r.Deliverystatus||'').toLowerCase()==='delivery')||rows[0];
+    return {
+      pincode:pin,
+      state:delivery.statename||rows[0].statename||'',
+      district:delivery.Districtname||rows[0].Districtname||'',
+      postOffice:delivery.officename||rows[0].officename||'',
+      taluk:delivery.Taluk||rows[0].Taluk||''
+    };
+  }
+
+  async function lookupFromPostalPincode(pin){
+    const x=await fetchJson(POSTAL_PINCODE_SOURCE+pin);
+    const rows=x&&x[0]&&x[0].PostOffice;
+    if(!Array.isArray(rows)||!rows.length) throw new Error('PIN not found');
+
+    const r=rows[0];
+    return {
+      pincode:pin,
+      state:r.State||'',
+      district:r.District||'',
+      postOffice:r.Name||'',
+      taluk:r.Block||r.Taluk||''
+    };
+  }
+
+  window.jhammLookupPin=async function(pin){
+    pin=String(pin||'').replace(/\D/g,'').slice(0,6);
+    if(!/^\d{6}$/.test(pin)) throw new Error('Invalid PIN');
+    if(cache.has(pin)) return cache.get(pin);
+
+    let result;
+
+    try{
+      result=await lookupFromIndiaPost(pin);
+    }catch(primaryError){
+      console.warn('India Post lookup failed, trying fallback:',primaryError);
+      result=await lookupFromPostalPincode(pin);
+    }
+
+    cache.set(pin,result);
+    return result;
+  };
+})();
