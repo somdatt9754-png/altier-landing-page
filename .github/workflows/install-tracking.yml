@@ -55,12 +55,18 @@ jobs:
           from pathlib import Path
           index=Path('jhamm/index.html'); text=index.read_text(encoding='utf-8')
           old='https://raw.githack.com/somdatt9754-png/altier-landing-page/shop-campaign-product-page/shop-pin.html?v=20260824-0921'
-          if old not in text: raise SystemExit('Expected shop-pin raw.githack URL was not found in jhamm/index.html')
-          index.write_text(text.replace(old,'/shop-pin.html'),encoding='utf-8')
+          if old in text:
+              text=text.replace(old,'/shop-pin.html')
+              index.write_text(text,encoding='utf-8')
+          elif '/shop-pin.html' not in text:
+              raise SystemExit('jhamm/index.html does not point to local shop-pin.html')
           pin=Path('shop-pin.html'); text=pin.read_text(encoding='utf-8')
           old='https://raw.githack.com/somdatt9754-png/altier-landing-page/shop-campaign-product-page/shop.html?v=20260912-0001'
-          if old not in text: raise SystemExit('Expected shop raw.githack URL was not found in shop-pin.html')
-          pin.write_text(text.replace(old,'/shop.html'),encoding='utf-8')
+          if old in text:
+              text=text.replace(old,'/shop.html')
+          elif '/shop.html' not in text:
+              raise SystemExit('shop-pin.html does not point to local shop.html')
+          pin.write_text(text,encoding='utf-8')
           PY
           if grep -R 'raw.githack.com/somdatt9754-png/altier-landing-page/shop-campaign-product-page' -n jhamm/index.html shop-pin.html shop.html; then exit 1; fi
       - name: Commit tracking and JHAMM changes
