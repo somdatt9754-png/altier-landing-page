@@ -14,71 +14,61 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0
       - name: Install shared tracking and GTM on crop pages
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
-
           tracking_marker = '<script src="tracking.js"></script>'
           gtm_head_marker = 'https://www.googletagmanager.com/gtm.js?id=GTM-TJGXF2S8'
           gtm_head = '''<!-- Google Tag Manager -->
-          <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-          })(window,document,'script','dataLayer','GTM-TJGXF2S8');</script>
+          <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TJGXF2S8');</script>
           <!-- End Google Tag Manager -->'''
           gtm_noscript_marker = 'https://www.googletagmanager.com/ns.html?id=GTM-TJGXF2S8'
           gtm_noscript = '''<!-- Google Tag Manager (noscript) -->
-          <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJGXF2S8"
-          height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+          <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJGXF2S8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <!-- End Google Tag Manager (noscript) -->'''
-
-          changed = []
-
+          changed=[]
           for path in Path('.').glob('*.html'):
-              if path.name.lower() == 'index.html':
-                  continue
-
-              text = path.read_text(encoding='utf-8')
-              original = text
-
-              # Add GTM to every crop page so GTM can receive the existing
-              # tracking.js dataLayer events such as altier_whatsapp_click.
+              if path.name.lower()=='index.html': continue
+              text=path.read_text(encoding='utf-8'); original=text
               if gtm_head_marker not in text and '</head>' in text.lower():
-                  idx = text.lower().rfind('</head>')
-                  text = text[:idx] + '\n' + gtm_head + '\n' + text[idx:]
-
+                  idx=text.lower().rfind('</head>'); text=text[:idx]+'\n'+gtm_head+'\n'+text[idx:]
               if gtm_noscript_marker not in text and '<body' in text.lower():
-                  body_start = text.lower().find('<body')
-                  body_end = text.find('>', body_start)
-                  if body_end != -1:
-                      insert_at = body_end + 1
-                      text = text[:insert_at] + '\n' + gtm_noscript + '\n' + text[insert_at:]
-
+                  body_start=text.lower().find('<body'); body_end=text.find('>',body_start)
+                  if body_end!=-1: text=text[:body_end+1]+'\n'+gtm_noscript+'\n'+text[body_end+1:]
               if tracking_marker not in text and '</body>' in text.lower():
-                  idx = text.lower().rfind('</body>')
-                  text = text[:idx] + '\n  ' + tracking_marker + '\n' + text[idx:]
-
-              if text != original:
-                  path.write_text(text, encoding='utf-8')
-                  changed.append(str(path))
-
-          print('Updated:', ', '.join(changed) if changed else 'none')
+                  idx=text.lower().rfind('</body>'); text=text[:idx]+'\n  '+tracking_marker+'\n'+text[idx:]
+              if text!=original: path.write_text(text,encoding='utf-8'); changed.append(str(path))
+          print('Updated:',', '.join(changed) if changed else 'none')
           PY
-
-      - name: Commit tracking installation
+      - name: Move JHAMM shop flow from campaign branch onto main domain
         shell: bash
         run: |
-          if git diff --quiet; then
-            echo "No HTML changes required."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add '*.html'
-          git commit -m "Install GTM on ALTIER crop pages"
+          set -euo pipefail
+          git fetch origin shop-campaign-product-page
+          git show origin/shop-campaign-product-page:shop-pin.html > shop-pin.html
+          git show origin/shop-campaign-product-page:shop.html > shop.html
+          python - <<'PY'
+          from pathlib import Path
+          index=Path('jhamm/index.html'); text=index.read_text(encoding='utf-8')
+          old='https://raw.githack.com/somdatt9754-png/altier-landing-page/shop-campaign-product-page/shop-pin.html?v=20260824-0921'
+          if old not in text: raise SystemExit('Expected shop-pin raw.githack URL was not found in jhamm/index.html')
+          index.write_text(text.replace(old,'/shop-pin.html'),encoding='utf-8')
+          pin=Path('shop-pin.html'); text=pin.read_text(encoding='utf-8')
+          old='https://raw.githack.com/somdatt9754-png/altier-landing-page/shop-campaign-product-page/shop.html?v=20260912-0001'
+          if old not in text: raise SystemExit('Expected shop raw.githack URL was not found in shop-pin.html')
+          pin.write_text(text.replace(old,'/shop.html'),encoding='utf-8')
+          PY
+          if grep -R 'raw.githack.com/somdatt9754-png/altier-landing-page/shop-campaign-product-page' -n jhamm/index.html shop-pin.html shop.html; then exit 1; fi
+      - name: Commit tracking and JHAMM changes
+        shell: bash
+        run: |
+          if git diff --quiet; then echo 'No changes required.'; exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add '*.html' jhamm/index.html shop-pin.html shop.html
+          git commit -m 'Move JHAMM shop flow onto main domain'
           git push
