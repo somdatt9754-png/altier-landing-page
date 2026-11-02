@@ -18,12 +18,12 @@
 </script>
 <!-- End ShareChat SDK loader -->
 <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TJGXF2S8');</script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js'+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TJGXF2S8');</script>
 <!-- End Google Tag Manager -->
 <style>html,body{margin:0;min-height:100%;background:#f5f8f5;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#172217}.wrap{min-height:100vh;padding:22px 14px;background:linear-gradient(180deg,#f5fbf6,#fff)}.box{width:min(92%,620px);margin:30px auto;background:#fff;border:1px solid #dfe8e1;border-radius:20px;box-shadow:0 12px 30px rgba(16,45,25,.08);padding:22px}.ok{font-size:54px;text-align:center}.box h1{margin:5px 0 8px;text-align:center;color:#075c2b;font-size:28px}.muted{color:#657066;text-align:center;font-size:13px;margin:0 0 18px}.details{border:1px solid #dfe8e1;border-radius:14px;padding:14px;background:#f8fbf8}.row{display:flex;justify-content:space-between;gap:16px;font-size:14px;margin:9px 0}.row b:last-child{text-align:right}.total{padding-top:10px;border-top:1px solid #dfe8e1;font-weight:900;font-size:18px;color:#075c2b}.next{margin-top:16px;padding:12px;border-radius:12px;background:#eef9f0;color:#176b39;text-align:center;font-size:13px}.small{margin-top:12px;font-size:11px;color:#657066;text-align:center}</style>
 </head>
 <body>
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJGXF2S8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <main class="wrap">
   <section class="box">
     <div class="ok">✅</div>
@@ -111,7 +111,13 @@
     content_name: o.product_name,
     pack_grams: o.pack_grams,
     quantity: Number(o.quantity),
-    payment_method: o.payment_method
+    payment_method: o.payment_method,
+    // --- Added for Meta Advanced Matching (hashed by Meta / GTM). Additive only. ---
+    customer_name: o.customer_name || '',
+    phone: o.phone || '',
+    pincode: o.pincode || '',
+    state: o.state || '',
+    district: o.district || ''
   });
 
   try{
