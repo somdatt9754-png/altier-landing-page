@@ -120,6 +120,38 @@
     district: o.district || ''
   });
 
+  // ---- Meta Purchase fired directly from this page (independent of GTM variables) ----
+  // Waits for fbq, sets customer data for Advanced Matching, then sends the Purchase
+  // with value + eventID. Pause the GTM "Meta-purchase" tag so this is the only source.
+  (function metaPurchase(){
+    var tries = 0;
+    function go(){
+      if (typeof window.fbq !== 'function'){
+        if (tries++ < 60) { setTimeout(go, 100); }
+        else { console.log('[META] fbq not available; purchase not sent from page'); }
+        return;
+      }
+      try{
+        window.fbq('init','2195441378518459',{
+          ph: o.phone || '',
+          fn: o.customer_name || '',
+          zp: o.pincode || '',
+          st: o.state || '',
+          ct: o.district || '',
+          country: 'in'
+        });
+        window.fbq('track','Purchase',{
+          value: Number(o.total_amount) || 0,
+          currency: 'INR'
+        },{ eventID: String(o.order_id || '') });
+        console.log('[META] Purchase sent from page', {order_id: o.order_id});
+      }catch(e){
+        console.log('[META] Purchase from page failed', e);
+      }
+    }
+    go();
+  })();
+
   try{
     sessionStorage.setItem(firedKey, '1');
   }catch(e){
