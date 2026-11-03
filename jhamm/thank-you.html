@@ -152,6 +152,22 @@
     go();
   })();
 
+  // ---- Server-side Purchase via Meta Conversions API (no GTM, no browser pixel needed) ----
+  try{
+    fetch('https://oljqgaqgxypzvavimkye.supabase.co/functions/v1/meta-capi-purchase',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':'sb_publishable_2Eidn71dnhfgUEb-VskzSg_Fvl1EjdJ',
+        'Authorization':'Bearer sb_publishable_2Eidn71dnhfgUEb-VskzSg_Fvl1EjdJ'
+      },
+      body: JSON.stringify({ order_id: o.order_id })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(j){ console.log('[META CAPI]', j); })
+    .catch(function(e){ console.log('[META CAPI] failed', e); });
+  }catch(e){ console.log('[META CAPI] failed', e); }
+
   try{
     sessionStorage.setItem(firedKey, '1');
   }catch(e){
