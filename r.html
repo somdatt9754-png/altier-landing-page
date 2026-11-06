@@ -15,23 +15,27 @@ html,body{margin:0;min-height:100%;background:#f4f8f4;color:#16221a;
   box-shadow:0 10px 26px rgba(16,45,25,.07);padding:20px}
 h1{font-size:21px;margin:0 0 4px;color:#075c2b}
 .sub{color:#69756b;font-size:13px;margin:0 0 16px}
-.prod{border:1px solid #e3ece5;border-radius:14px;background:#f8fbf8;padding:14px;margin-bottom:14px}
-.pname{font-weight:800;font-size:16px;margin-bottom:8px}
-.price{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.08em;color:#8a958c;
+  text-transform:uppercase;margin:0 0 8px}
+.packs{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
+.pk{border:2px solid #e3ece5;background:#fff;border-radius:14px;padding:11px 8px;
+  cursor:pointer;text-align:center;transition:.12s}
+.pk .sz{font-weight:800;font-size:14px;color:#16221a}
+.pk .pr{font-size:16px;font-weight:900;color:#075c2b;margin-top:3px}
+.pk .of{font-size:11px;color:#8a958c;text-decoration:line-through}
+.pk.on{border-color:#075c2b;background:#f0faf3;box-shadow:0 0 0 3px rgba(7,92,43,.08)}
+.price{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
+  border:1px solid #e3ece5;border-radius:14px;background:#f8fbf8;padding:14px;margin-bottom:14px}
 .price s{color:#98a29a;font-size:15px}
-.price b{font-size:25px;color:#075c2b}
+.price b{font-size:26px;color:#075c2b}
 .badge{background:#e7f7ec;color:#0b6b33;border-radius:999px;
   padding:4px 10px;font-size:12px;font-weight:800}
 .addr{border:1px solid #e3ece5;border-radius:14px;padding:13px;margin-bottom:16px;font-size:14px;line-height:1.55}
-.addr .lbl{font-size:11px;font-weight:800;letter-spacing:.08em;color:#8a958c;
-  text-transform:uppercase;margin-bottom:5px}
 .addr .ph{color:#69756b;font-size:13px;margin-top:5px}
 button.go{width:100%;border:0;border-radius:14px;background:#075c2b;color:#fff;
   font:900 17px system-ui;padding:16px;cursor:pointer}
 button.go:active{transform:scale(.995)}
 button.go[disabled]{background:#9db3a4}
-.alt{display:block;text-align:center;margin-top:14px;color:#0b6b33;
-  font-size:13px;text-decoration:none}
 .note{margin-top:12px;text-align:center;font-size:11px;color:#8a958c}
 .center{text-align:center;padding:26px 8px}
 .big{font-size:52px;line-height:1}
@@ -41,18 +45,11 @@ button.go[disabled]{background:#9db3a4}
   border-bottom:1px solid #eef3ef}
 .row:last-child{border-bottom:0}
 .row b{text-align:right}
-.err{background:#fff5f5;border-color:#f3d6d6;color:#8d2b2b}
+a.alt{display:block;text-align:center;margin-top:14px;color:#0b6b33;
+  font-size:13px;text-decoration:none}
 </style>
-
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TJGXF2S8');</script>
-<!-- End Google Tag Manager -->
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJGXF2S8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-
 <div class="wrap">
 
   <div id="loading" class="card center">
@@ -64,14 +61,14 @@ button.go[disabled]{background:#9db3a4}
     <div class="brand">ALTIER Crop Science</div>
     <div class="card">
       <h1>नमस्ते <span id="nm">जी</span> 🙏</h1>
-      <p class="sub">आपका पिछला पैक — एक क्लिक में दोबारा</p>
+      <p class="sub">पैक चुनें — एक क्लिक में दोबारा</p>
 
-      <div class="prod">
-        <div class="pname">JHAMM <span id="pack"></span></div>
-        <div class="price">
-          <s id="old"></s><b id="new"></b>
-          <span class="badge">₹50 बचत</span>
-        </div>
+      <div class="lbl">JHAMM पैक</div>
+      <div class="packs" id="packs"></div>
+
+      <div class="price">
+        <s id="old"></s><b id="new"></b>
+        <span class="badge" id="badge"></span>
       </div>
 
       <div class="addr">
@@ -82,7 +79,6 @@ button.go[disabled]{background:#9db3a4}
       </div>
 
       <button class="go" id="go">हाँ, यही भेज दो</button>
-      <a class="alt" href="https://altier.in/shop-pin.html">पैक बदलना है? पूरी साइट देखें →</a>
       <div class="note">पैसा डिलीवरी पर — अभी कुछ नहीं देना है</div>
     </div>
   </div>
@@ -122,18 +118,11 @@ button.go[disabled]{background:#9db3a4}
   var KEY='sb_publishable_2Eidn71dnhfgUEb-VskzSg_Fvl1EjdJ';
   var $=function(id){return document.getElementById(id)};
   var token=(new URLSearchParams(location.search)).get('t')||'';
-  var data=null, busy=false;
+  var data=null, chosen=null, busy=false;
 
-  function show(which){
-    ['loading','card','done','err'].forEach(function(k){ $(k).classList.add('hide') });
-    $(which).classList.remove('hide');
-  }
+  function show(w){ ['loading','card','done','err'].forEach(function(k){$(k).classList.add('hide')}); $(w).classList.remove('hide'); }
   function money(v){ return '₹'+Number(v||0).toLocaleString('en-IN') }
-
-  function fail(ico,title,msg){
-    $('eIco').textContent=ico; $('eTitle').textContent=title; $('eMsg').textContent=msg;
-    show('err');
-  }
+  function fail(ico,t,m){ $('eIco').textContent=ico; $('eTitle').textContent=t; $('eMsg').textContent=m; show('err'); }
 
   function rpc(fn, body){
     return fetch(SB+'/rest/v1/rpc/'+fn,{
@@ -143,15 +132,36 @@ button.go[disabled]{background:#9db3a4}
     }).then(function(r){ return r.json().then(function(j){ return {ok:r.ok,data:j} }) });
   }
 
+  function paint(){
+    if(!chosen) return;
+    $('old').textContent=money(chosen.price);
+    $('new').textContent=money(chosen.payable);
+    $('badge').textContent=money(chosen.discount)+' बचत';
+    Array.prototype.forEach.call(document.querySelectorAll('.pk'),function(el){
+      el.classList.toggle('on', Number(el.dataset.g)===chosen.pack_grams);
+    });
+  }
+
   function render(d){
     data=d;
     $('nm').textContent=d.customer_name||'जी';
-    $('pack').textContent=(d.pack_label||'');
-    $('old').textContent=money(d.mrp_price);
-    $('new').textContent=money(d.payable);
     $('aline').textContent=d.address_line||'';
     $('acity').textContent=[d.district,d.state,d.pincode].filter(Boolean).join(', ');
     $('aph').textContent='मोबाइल: '+(d.phone_masked||'');
+
+    var box=$('packs'); box.innerHTML='';
+    (d.packs||[]).forEach(function(p){
+      var el=document.createElement('div');
+      el.className='pk'; el.dataset.g=p.pack_grams;
+      el.innerHTML='<div class="sz">'+p.label+'</div>'+
+                   '<div class="of">'+money(p.price)+'</div>'+
+                   '<div class="pr">'+money(p.payable)+'</div>';
+      el.addEventListener('click',function(){ chosen=p; paint(); });
+      box.appendChild(el);
+      if(p.pack_grams===d.current_pack) chosen=p;
+    });
+    if(!chosen && d.packs && d.packs.length) chosen=d.packs[0];
+    paint();
     show('card');
   }
 
@@ -164,27 +174,21 @@ button.go[disabled]{background:#9db3a4}
     if(d.reason==='used'){ fail('✅','यह लिंक पहले इस्तेमाल हो चुका है','इस लिंक से ऑर्डर हो जा चुका है। नया ऑर्डर करने के लिए नीचे दिए लिंक पर जाएँ।'); return; }
     if(d.reason==='not_found'){ fail('ℹ️','लिंक नहीं मिला','यह लिंक सही नहीं है या पुराना हो गया है।'); return; }
     fail('ℹ️','ऑर्डर नहीं खुला','कृपया WhatsApp पर संपर्क करें।');
-  }).catch(function(){
-    fail('📶','इंटरनेट की दिक्कत','कनेक्शन जाँचकर फिर कोशिश करें।');
-  });
+  }).catch(function(){ fail('📶','इंटरनेट की दिक्कत','कनेक्शन जाँचकर फिर कोशिश करें।'); });
 
   $('go').addEventListener('click',function(){
-    if(busy) return;
+    if(busy||!chosen) return;
     busy=true;
     var b=$('go'); b.disabled=true; b.textContent='ऑर्डर हो रहा है…';
-    rpc('reorder_place',{p_token:token}).then(function(res){
+    rpc('reorder_place',{p_token:token, p_pack_grams:chosen.pack_grams}).then(function(res){
       var d=res.data||{};
       if(d.ok===true){
         $('dOrder').textContent=d.order_id||'—';
-        $('dPack').textContent=(data&&data.pack_label)||'—';
+        $('dPack').textContent=chosen.label;
         $('dTotal').textContent=money(d.total_amount);
-        show('done');
-        return;
+        show('done'); return;
       }
-      if(d.reason==='used'){
-        fail('✅','यह लिंक पहले इस्तेमाल हो चुका है','इस लिंक से ऑर्डर हो जा चुका है।');
-        return;
-      }
+      if(d.reason==='used'){ fail('✅','यह लिंक पहले इस्तेमाल हो चुका है','इस लिंक से ऑर्डर हो जा चुका है।'); return; }
       busy=false; b.disabled=false; b.textContent='हाँ, यही भेज दो';
       fail('⚠️','ऑर्डर नहीं हो सका','कृपया WhatsApp पर संपर्क करें — हम तुरंत मदद करेंगे।');
     }).catch(function(){
@@ -194,7 +198,5 @@ button.go[disabled]{background:#9db3a4}
   });
 })();
 </script>
-
-  <script src="tracking.js"></script>
 </body>
 </html>
