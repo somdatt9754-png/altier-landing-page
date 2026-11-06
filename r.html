@@ -15,6 +15,9 @@ html,body{margin:0;min-height:100%;background:#f4f8f4;color:#16221a;
   box-shadow:0 10px 26px rgba(16,45,25,.07);padding:20px}
 h1{font-size:21px;margin:0 0 4px;color:#075c2b}
 .sub{color:#69756b;font-size:13px;margin:0 0 16px}
+.last{background:#f8fbf8;border:1px solid #e3ece5;border-radius:12px;
+  padding:11px 13px;margin:0 0 16px;font-size:13px;color:#3c4a3f}
+.last b{color:#075c2b}
 .lbl{font-size:11px;font-weight:800;letter-spacing:.08em;color:#8a958c;
   text-transform:uppercase;margin:0 0 8px}
 .packs{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
@@ -48,16 +51,8 @@ button.go[disabled]{background:#9db3a4}
 a.alt{display:block;text-align:center;margin-top:14px;color:#0b6b33;
   font-size:13px;text-decoration:none}
 </style>
-
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TJGXF2S8');</script>
-<!-- End Google Tag Manager -->
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJGXF2S8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-
 <div class="wrap">
 
   <div id="loading" class="card center">
@@ -70,6 +65,11 @@ a.alt{display:block;text-align:center;margin-top:14px;color:#0b6b33;
     <div class="card">
       <h1>नमस्ते <span id="nm">जी</span> 🙏</h1>
       <p class="sub">पैक चुनें — एक क्लिक में दोबारा</p>
+
+      <div class="last" id="lastBox">
+        <span style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#8a958c;text-transform:uppercase">पिछली बार</span><br>
+        <b id="lastTxt">—</b>
+      </div>
 
       <div class="lbl">JHAMM पैक</div>
       <div class="packs" id="packs"></div>
@@ -153,6 +153,13 @@ a.alt{display:block;text-align:center;margin-top:14px;color:#0b6b33;
   function render(d){
     data=d;
     $('nm').textContent=d.customer_name||'जी';
+    var MN=['जनवरी','फ़रवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर'];
+    var ds='';
+    if(d.last_order_date){
+      var p=d.last_order_date.split('-');
+      if(p.length===3) ds=' · '+Number(p[2])+' '+MN[Number(p[1])-1]+' '+p[0];
+    }
+    $('lastTxt').textContent=(d.last_pack_label||'')+' — '+money(d.last_amount)+ds;
     $('aline').textContent=d.address_line||'';
     $('acity').textContent=[d.district,d.state,d.pincode].filter(Boolean).join(', ');
     $('aph').textContent='मोबाइल: '+(d.phone_masked||'');
@@ -206,7 +213,5 @@ a.alt{display:block;text-align:center;margin-top:14px;color:#0b6b33;
   });
 })();
 </script>
-
-  <script src="tracking.js"></script>
 </body>
 </html>
