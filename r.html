@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>JHAMM — दोबारा ऑर्डर</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#f4f8f4;color:#16221a;
+  font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.wrap{max-width:520px;margin:0 auto;padding:18px 14px 34px}
+.brand{text-align:center;font-size:12px;letter-spacing:.12em;font-weight:800;
+  color:#0b6b33;text-transform:uppercase;margin:6px 0 14px}
+.card{background:#fff;border:1px solid #dfe8e1;border-radius:20px;
+  box-shadow:0 10px 26px rgba(16,45,25,.07);padding:20px}
+h1{font-size:21px;margin:0 0 4px;color:#075c2b}
+.sub{color:#69756b;font-size:13px;margin:0 0 16px}
+.prod{border:1px solid #e3ece5;border-radius:14px;background:#f8fbf8;padding:14px;margin-bottom:14px}
+.pname{font-weight:800;font-size:16px;margin-bottom:8px}
+.price{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.price s{color:#98a29a;font-size:15px}
+.price b{font-size:25px;color:#075c2b}
+.badge{background:#e7f7ec;color:#0b6b33;border-radius:999px;
+  padding:4px 10px;font-size:12px;font-weight:800}
+.addr{border:1px solid #e3ece5;border-radius:14px;padding:13px;margin-bottom:16px;font-size:14px;line-height:1.55}
+.addr .lbl{font-size:11px;font-weight:800;letter-spacing:.08em;color:#8a958c;
+  text-transform:uppercase;margin-bottom:5px}
+.addr .ph{color:#69756b;font-size:13px;margin-top:5px}
+button.go{width:100%;border:0;border-radius:14px;background:#075c2b;color:#fff;
+  font:900 17px system-ui;padding:16px;cursor:pointer}
+button.go:active{transform:scale(.995)}
+button.go[disabled]{background:#9db3a4}
+.alt{display:block;text-align:center;margin-top:14px;color:#0b6b33;
+  font-size:13px;text-decoration:none}
+.note{margin-top:12px;text-align:center;font-size:11px;color:#8a958c}
+.center{text-align:center;padding:26px 8px}
+.big{font-size:52px;line-height:1}
+.hide{display:none!important}
+.rows{margin:16px 0 0}
+.row{display:flex;justify-content:space-between;gap:14px;font-size:14px;padding:8px 0;
+  border-bottom:1px solid #eef3ef}
+.row:last-child{border-bottom:0}
+.row b{text-align:right}
+.err{background:#fff5f5;border-color:#f3d6d6;color:#8d2b2b}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="loading" class="card center">
+    <div class="big">⏳</div>
+    <p class="sub" style="margin-top:12px">आपका ऑर्डर देख रहे हैं…</p>
+  </div>
+
+  <div id="card" class="hide">
+    <div class="brand">ALTIER Crop Science</div>
+    <div class="card">
+      <h1>नमस्ते <span id="nm">जी</span> 🙏</h1>
+      <p class="sub">आपका पिछला पैक — एक क्लिक में दोबारा</p>
+
+      <div class="prod">
+        <div class="pname">JHAMM <span id="pack"></span></div>
+        <div class="price">
+          <s id="old"></s><b id="new"></b>
+          <span class="badge">₹50 बचत</span>
+        </div>
+      </div>
+
+      <div class="addr">
+        <div class="lbl">यहाँ भेजेंगे</div>
+        <div id="aline"></div>
+        <div id="acity"></div>
+        <div class="ph" id="aph"></div>
+      </div>
+
+      <button class="go" id="go">हाँ, यही भेज दो</button>
+      <a class="alt" href="https://altier.in/shop-pin.html">पैक बदलना है? पूरी साइट देखें →</a>
+      <div class="note">पैसा डिलीवरी पर — अभी कुछ नहीं देना है</div>
+    </div>
+  </div>
+
+  <div id="done" class="hide">
+    <div class="brand">ALTIER Crop Science</div>
+    <div class="card center">
+      <div class="big">✅</div>
+      <h1 style="margin-top:10px">ऑर्डर हो गया</h1>
+      <p class="sub">आपका पार्सल जल्द ही भेजा जाएगा</p>
+      <div class="rows">
+        <div class="row"><span>Order ID</span><b id="dOrder">—</b></div>
+        <div class="row"><span>पैक</span><b id="dPack">—</b></div>
+        <div class="row"><span>पेमेंट</span><b>डिलीवरी पर (COD)</b></div>
+        <div class="row"><span>कुल</span><b id="dTotal">—</b></div>
+      </div>
+      <a class="alt" href="https://wa.me/919131750957">कुछ पूछना है? WhatsApp करें</a>
+    </div>
+  </div>
+
+  <div id="err" class="hide">
+    <div class="brand">ALTIER Crop Science</div>
+    <div class="card center">
+      <div class="big" id="eIco">ℹ️</div>
+      <h1 id="eTitle" style="margin-top:10px">—</h1>
+      <p class="sub" id="eMsg">—</p>
+      <a class="alt" href="https://altier.in/shop-pin.html">नया ऑर्डर करें →</a>
+      <a class="alt" href="https://wa.me/919131750957">WhatsApp पर बात करें</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var SB='https://oljqgaqgxypzvavimkye.supabase.co';
+  var KEY='sb_publishable_2Eidn71dnhfgUEb-VskzSg_Fvl1EjdJ';
+  var $=function(id){return document.getElementById(id)};
+  var token=(new URLSearchParams(location.search)).get('t')||'';
+  var data=null, busy=false;
+
+  function show(which){
+    ['loading','card','done','err'].forEach(function(k){ $(k).classList.add('hide') });
+    $(which).classList.remove('hide');
+  }
+  function money(v){ return '₹'+Number(v||0).toLocaleString('en-IN') }
+
+  function fail(ico,title,msg){
+    $('eIco').textContent=ico; $('eTitle').textContent=title; $('eMsg').textContent=msg;
+    show('err');
+  }
+
+  function rpc(fn, body){
+    return fetch(SB+'/rest/v1/rpc/'+fn,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY},
+      body:JSON.stringify(body)
+    }).then(function(r){ return r.json().then(function(j){ return {ok:r.ok,data:j} }) });
+  }
+
+  function render(d){
+    data=d;
+    $('nm').textContent=d.customer_name||'जी';
+    $('pack').textContent=(d.pack_label||'');
+    $('old').textContent=money(d.mrp_price);
+    $('new').textContent=money(d.payable);
+    $('aline').textContent=d.address_line||'';
+    $('acity').textContent=[d.district,d.state,d.pincode].filter(Boolean).join(', ');
+    $('aph').textContent='मोबाइल: '+(d.phone_masked||'');
+    show('card');
+  }
+
+  if(!token){ fail('ℹ️','लिंक अधूरा है','यह लिंक पूरा नहीं है। कृपया WhatsApp पर भेजा गया लिंक फिर से खोलें।'); return; }
+
+  rpc('reorder_view',{p_token:token}).then(function(res){
+    if(!res.ok){ fail('⚠️','कुछ गड़बड़ हुई','अभी ऑर्डर नहीं खुल सका। कृपया थोड़ी देर बाद फिर कोशिश करें।'); return; }
+    var d=res.data||{};
+    if(d.ok===true){ render(d); return; }
+    if(d.reason==='used'){ fail('✅','यह लिंक पहले इस्तेमाल हो चुका है','इस लिंक से ऑर्डर हो जा चुका है। नया ऑर्डर करने के लिए नीचे दिए लिंक पर जाएँ।'); return; }
+    if(d.reason==='not_found'){ fail('ℹ️','लिंक नहीं मिला','यह लिंक सही नहीं है या पुराना हो गया है।'); return; }
+    fail('ℹ️','ऑर्डर नहीं खुला','कृपया WhatsApp पर संपर्क करें।');
+  }).catch(function(){
+    fail('📶','इंटरनेट की दिक्कत','कनेक्शन जाँचकर फिर कोशिश करें।');
+  });
+
+  $('go').addEventListener('click',function(){
+    if(busy) return;
+    busy=true;
+    var b=$('go'); b.disabled=true; b.textContent='ऑर्डर हो रहा है…';
+    rpc('reorder_place',{p_token:token}).then(function(res){
+      var d=res.data||{};
+      if(d.ok===true){
+        $('dOrder').textContent=d.order_id||'—';
+        $('dPack').textContent=(data&&data.pack_label)||'—';
+        $('dTotal').textContent=money(d.total_amount);
+        show('done');
+        return;
+      }
+      if(d.reason==='used'){
+        fail('✅','यह लिंक पहले इस्तेमाल हो चुका है','इस लिंक से ऑर्डर हो जा चुका है।');
+        return;
+      }
+      busy=false; b.disabled=false; b.textContent='हाँ, यही भेज दो';
+      fail('⚠️','ऑर्डर नहीं हो सका','कृपया WhatsApp पर संपर्क करें — हम तुरंत मदद करेंगे।');
+    }).catch(function(){
+      busy=false; b.disabled=false; b.textContent='हाँ, यही भेज दो';
+      fail('📶','इंटरनेट की दिक्कत','कनेक्शन जाँचकर फिर कोशिश करें।');
+    });
+  });
+})();
+</script>
+</body>
+</html>
