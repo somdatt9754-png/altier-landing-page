@@ -14,12 +14,6 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"No
 .card{background:#fff;border-radius:14px;padding:18px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(16,32,48,.09)}
 .hi{font-size:17px;font-weight:700;margin:0 0 4px}
 .small{font-size:13px;color:#5b6b7c}
-.orderbox{background:#f6f9fc;border:1px solid #e2eaf2;border-radius:11px;padding:13px 14px;margin-top:13px}
-.row{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:5px 0}
-.row .k{color:#5b6b7c}
-.row .v{font-weight:600;text-align:right}
-.amount{font-size:19px;font-weight:800;color:#0d5c34}
-.addr{font-size:13px;color:#42536a;margin-top:10px;padding-top:10px;border-top:1px dashed #d7e2ec}
 .pack{display:flex;justify-content:space-between;align-items:flex-start;width:100%;background:#fff;border:1.6px solid #dbe5ee;border-radius:12px;padding:14px 15px;margin-top:10px;font-family:inherit;font-size:15px;cursor:pointer;text-align:left}
 .pack:active{border-color:#0d7a44;background:#f4fbf7}
 .pack .pl{font-weight:700;font-size:16px}
@@ -34,16 +28,8 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"No
 .spin{text-align:center;padding:40px;color:#7a8899}
 .note{font-size:12px;color:#7a8899;text-align:center;margin-top:16px;line-height:1.6}
 </style>
-
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TJGXF2S8');</script>
-<!-- End Google Tag Manager -->
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJGXF2S8" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-
 <div class="top">
   <div class="brand">ALTIER CROP SCIENCE</div>
   <div class="sub">झम्म माइक्रो न्यूट्रिएंट</div>
@@ -86,12 +72,8 @@ function mainView(v) {
 
   var html = '<div class="card">' +
     '<p class="hi">कौन सा पैक चाहिए?</p>' +
-    '<p class="small">अभी आपका पैक: ' + esc(v.pack_label) + " · " + inr(v.amount) + "</p>" +
-    '<div class="orderbox">' +
-      '<div class="row"><span class="k">नाम</span><span class="v">' + esc(v.customer_name) + "</span></div>" +
-      '<div class="row"><span class="k">ऑर्डर</span><span class="v" style="font-size:12px">' + esc(v.order_id) + "</span></div>" +
-      '<div class="addr">📍 ' + esc(v.address) + "</div>" +
-    "</div>";
+    '<p class="small">' + esc(v.customer_name) + " जी — अभी आपका पैक: " +
+      esc(v.pack_label) + " · " + inr(v.amount) + "</p>";
 
   (v.packs || []).forEach(function (p) {
     var cur = Number(p.pack_grams) === Number(v.pack_grams);
@@ -147,7 +129,5 @@ if (!tok) {
   reload();
 }
 </script>
-
-  <script src="tracking.js"></script>
 </body>
 </html>
