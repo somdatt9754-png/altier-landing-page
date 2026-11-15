@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ऑर्डर की पुष्टि — Altier Crop Science</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans Devanagari",sans-serif;background:#f2f4f7;color:#16202c;line-height:1.55}
+.top{background:#1e3a5f;color:#fff;padding:16px 18px;text-align:center}
+.top .brand{font-size:15px;letter-spacing:.14em;font-weight:700}
+.top .sub{font-size:12px;opacity:.8;margin-top:3px}
+.wrap{max-width:460px;margin:0 auto;padding:16px 14px 34px}
+.card{background:#fff;border-radius:14px;padding:18px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(16,32,48,.09)}
+.hi{font-size:17px;font-weight:700;margin:0 0 4px}
+.small{font-size:13px;color:#5b6b7c}
+.orderbox{background:#f6f9fc;border:1px solid #e2eaf2;border-radius:11px;padding:13px 14px;margin-top:13px}
+.row{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:5px 0}
+.row .k{color:#5b6b7c}
+.row .v{font-weight:600;text-align:right}
+.amount{font-size:19px;font-weight:800;color:#0d5c34}
+.addr{font-size:13px;color:#42536a;margin-top:10px;padding-top:10px;border-top:1px dashed #d7e2ec}
+.btn{display:block;width:100%;border:0;border-radius:11px;padding:15px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:11px}
+.b-green{background:#0d7a44;color:#fff}
+.b-green:active{background:#0a6136}
+.b-line{background:#fff;color:#1e3a5f;border:1.6px solid #c8d6e5}
+.b-line:active{background:#eef3f8}
+.b-red{background:#fff;color:#b3261e;border:1.6px solid #f0c9c6}
+.b-red:active{background:#fdf1f0}
+.pack{display:flex;justify-content:space-between;align-items:center;width:100%;background:#fff;border:1.6px solid #dbe5ee;border-radius:11px;padding:13px 15px;margin-top:9px;font-family:inherit;font-size:15px;cursor:pointer}
+.pack:active{border-color:#0d7a44;background:#f4fbf7}
+.pack .pl{font-weight:700}
+.pack .pp{color:#0d5c34;font-weight:800}
+.ok{text-align:center;padding:26px 8px}
+.ok .icon{font-size:44px;line-height:1}
+.ok h2{margin:12px 0 6px;font-size:20px}
+.ok p{margin:0;color:#5b6b7c;font-size:14px}
+.spin{text-align:center;padding:40px;color:#7a8899}
+.note{font-size:12px;color:#7a8899;text-align:center;margin-top:16px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand">ALTIER CROP SCIENCE</div>
+  <div class="sub">झम्म माइक्रो न्यूट्रिएंट</div>
+</div>
+<div class="wrap" id="app"><div class="spin">कृपया रुकें…</div></div>
+<script>
+var SB_URL = "https://oljqgaqgxypzvavimkye.supabase.co";
+var SB_KEY = "__SUPABASE_ANON_KEY__";
+var tok = new URLSearchParams(location.search).get("t") || "";
+var app = document.getElementById("app");
+var state = { view: null };
+
+function rpc(fn, args) {
+  return fetch(SB_URL + "/rest/v1/rpc/" + fn, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "apikey": SB_KEY, "Authorization": "Bearer " + SB_KEY },
+    body: JSON.stringify(args || {})
+  }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+}
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+function inr(n) { return "₹" + Number(n || 0).toLocaleString("en-IN"); }
+function packLabel(g) { return Number(g) === 1000 ? "1 किलो" : g + " ग्राम"; }
+function screen(html) { app.innerHTML = html; }
+function msgScreen(icon, title, text) {
+  screen('<div class="card"><div class="ok"><div class="icon">' + icon + "</div><h2>" + esc(title) + "</h2><p>" + esc(text) + "</p></div></div><div class="note">— Altier Crop Science</div>");
+}
+function mainView(v) {
+  state.view = v;
+  var alreadyBooked = !v.can_confirm && !v.can_change && !v.can_cancel;
+  var html = '<div class="card">' +
+    '<p class="hi">नमस्ते ' + esc(v.customer_name) + " जी 🙏</p>" +
+    '<p class="small">आपका ऑर्डर हमें मिल गया है। नीचे देखकर पुष्टि कर दीजिए।</p>' +
+    '<div class="orderbox">' +
+      '<div class="row"><span class="k">पैक</span><span class="v">' + esc(v.pack_label) + "</span></div>" +
+      '<div class="row"><span class="k">रकम</span><span class="v amount">' + inr(v.amount) + "</span></div>" +
+      '<div class="row"><span class="k">भुगतान</span><span class="v">' + (v.payment_method === "cod" ? "डिलीवरी पर नकद" : "ऑनलाइन") + "</span></div>" +
+      '<div class="row"><span class="k">ऑर्डर</span><span class="v" style="font-size:12px">' + esc(v.order_id) + "</span></div>" +
+      '<div class="addr">📍 ' + esc(v.address) + "</div>" +
+    "</div>";
+  if (v.can_confirm) html += '<button class="btn b-green" id="bConfirm">हाँ, यही भेज दो ✅</button>';
+  if (v.can_change) html += '<button class="btn b-line" id="bChange">पैक बदलना है 🔄</button>';
+  if (v.can_cancel) html += '<button class="btn b-red" id="bCancel">नहीं चाहिए</button>';
+  if (alreadyBooked) html += '<div class="note" style="margin-top:14px">आपका पार्सल पहले ही भेजा जा चुका है। अब इसमें बदलाव नहीं हो सकता।</div>';
+  html += "</div>";
+  if (!alreadyBooked) html += '<div class="note">पुष्टि के बाद ही आपका पार्सल भेजा जाएगा।</div>';
+  screen(html);
+  var bc = document.getElementById("bConfirm"); if (bc) bc.onclick = doConfirm;
+  var bch = document.getElementById("bChange"); if (bch) bch.onclick = packView;
+  var bx = document.getElementById("bCancel"); if (bx) bx.onclick = doCancel;
+}
+function packView() {
+  var v = state.view;
+  var html = '<div class="card"><p class="hi">कौन सा पैक चाहिए?</p>' +
+    '<p class="small">अभी आपका पैक: ' + esc(v.pack_label) + " · " + inr(v.amount) + "</p>";
+  (v.packs || []).forEach(function (p) {
+    html += '<button class="pack" data-g="' + p.pack_grams + '"><span class="pl">' + esc(p.label) + '</span><span class="pp">' + inr(p.price) + "</span></button>";
+  });
+  html += '<button class="btn b-line" id="bBack" style="margin-top:14px">वापस जाएँ</button></div>';
+  screen(html);
+  Array.prototype.forEach.call(document.querySelectorAll(".pack"), function (b) {
+    b.onclick = function () { doPack(Number(b.getAttribute("data-g"))); };
+  });
+  document.getElementById("bBack").onclick = function () { mainView(state.view); };
+}
+function busy(text) { screen('<div class="spin">' + esc(text) + "</div>"); }
+function reload() {
+  rpc("confirm_view", { p_token: tok }).then(function (v) {
+    if (!v || !v.ok) { msgScreen("⚠️", "लिंक नहीं मिला", "यह लिंक सही नहीं है या पुराना हो गया है।"); return; }
+    mainView(v);
+  }).catch(function () { msgScreen("⚠️", "दिक्कत आ गई", "कृपया थोड़ी देर बाद फिर कोशिश करें।"); });
+}
+function doConfirm() {
+  busy("पुष्टि हो रही है…");
+  rpc("confirm_do", { p_token: tok }).then(function (r) {
+    if (r && r.ok) {
+      msgScreen("✅", "धन्यवाद, " + (state.view ? state.view.customer_name : "") + " जी!", "आपका ऑर्डर पक्का हो गया। " + packLabel(r.pack_grams) + " · " + inr(r.amount) + " — जैसे ही भेजा जाएगा, हम आपको बता देंगे।");
+    } else if (r && r.reason === "already_booked") {
+      msgScreen("📦", "पार्सल जा चुका है", "आपका ऑर्डर पहले ही भेजा जा चुका है।");
+    } else { msgScreen("⚠️", "पुष्टि नहीं हो सकी", "कृपया हमें फोन करें।"); }
+  }).catch(function () { msgScreen("⚠️", "दिक्कत आ गई", "कृपया थोड़ी देर बाद फिर कोशिश करें।"); });
+}
+function doPack(g) {
+  busy("पैक बदला जा रहा है…");
+  rpc("confirm_pack", { p_token: tok, p_grams: g }).then(function (r) {
+    if (r && r.ok) {
+      msgScreen("🔄", "पैक बदल गया", "अब आपका पैक " + packLabel(r.pack_grams) + " · " + inr(r.amount) + " हो गया है। अब नीचे पुष्टि कर दीजिए।");
+      setTimeout(reload, 1600);
+    } else if (r && r.reason === "already_booked") {
+      msgScreen("📦", "पार्सल जा चुका है", "अब पैक नहीं बदला जा सकता।");
+    } else { msgScreen("⚠️", "पैक नहीं बदला", "कृपया हमें फोन करें।"); }
+  }).catch(function () { msgScreen("⚠️", "दिक्कत आ गई", "कृपया थोड़ी देर बाद फिर कोशिश करें।"); });
+}
+function doCancel() {
+  if (!confirm("क्या आपका ऑर्डर रद्द कर दिया जाए?")) return;
+  busy("रद्द किया जा रहा है…");
+  rpc("confirm_cancel", { p_token: tok }).then(function (r) {
+    if (r && r.ok) { msgScreen("🙏", "ऑर्डर रद्द कर दिया", "कोई बात नहीं। जब भी ज़रूरत हो, हमें याद कीजिए।"); }
+    else if (r && r.reason === "already_booked") { msgScreen("📦", "पार्सल जा चुका है", "अब यह ऑर्डर रद्द नहीं हो सकता। कृपया हमें फोन करें।"); }
+    else { msgScreen("⚠️", "रद्द नहीं हो सका", "कृपया हमें फोन करें।"); }
+  }).catch(function () { msgScreen("⚠️", "दिक्कत आ गई", "कृपया थोड़ी देर बाद फिर कोशिश करें।"); });
+}
+if (!tok) { msgScreen("⚠️", "लिंक अधूरा है", "कृपया वही लिंक खोलें जो हमने संदेश में भेजा था।"); }
+else { reload(); }
+</script>
+</body>
+</html>
